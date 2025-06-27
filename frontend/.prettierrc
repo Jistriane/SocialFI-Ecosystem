@@ -1,0 +1,14 @@
+# Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+# Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+
+{
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+}

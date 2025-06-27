@@ -1,0 +1,120 @@
+import { AuthService } from '../../services/auth.service';
+import jwt from 'jsonwebtoken';
+import { config } from '../../config';
+import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+
+// Mock do ethers usando jest.fn() diretamente
+jest.mock('ethers', () => ({
+  verifyMessage: jest.fn(),
+  hexlify: jest.fn(),
+  randomBytes: jest.fn()
+}));
+
+// Import após o mock
+import { ethers } from 'ethers';
+
+describe('AuthService', () => {
+  const mockAddress = '0x123';
+  const mockSignature = '0xabc';
+  const mockNonce = '0xrandom';
+  let authService: AuthService;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    authService = new AuthService();
+    
+    // Setup dos mocks
+    (ethers.hexlify as jest.MockedFunction<typeof ethers.hexlify>).mockReturnValue(mockNonce);
+    (ethers.randomBytes as jest.MockedFunction<typeof ethers.randomBytes>).mockReturnValue(new Uint8Array(32));
+  });
+
+  describe('generateNonce', () => {
+    it('should generate a nonce for the given address', () => {
+      const nonce = authService.generateNonce(mockAddress);
+      expect(ethers.randomBytes).toHaveBeenCalledWith(32);
+      expect(ethers.hexlify).toHaveBeenCalled();
+      expect(nonce).toBe(mockNonce);
+    });
+  });
+
+  describe('verifySignature', () => {
+    it('deve verificar a assinatura e retornar token', async () => {
+      // Primeiro gera um nonce
+      authService.generateNonce(mockAddress);
+      
+      // Mock da verificação da assinatura
+      (ethers.verifyMessage as jest.MockedFunction<typeof ethers.verifyMessage>).mockReturnValue(mockAddress);
+
+      const result = await authService.verifySignature(mockAddress, mockSignature);
+      
+      expect(result.token).toBeDefined();
+      expect(result.error).toBeUndefined();
+      
+      // Verifica se o token é válido
+      if (result.token) {
+        const decoded = jwt.verify(result.token, config.jwtSecret) as any;
+        expect(decoded.address).toBe(mockAddress.toLowerCase());
+        expect(decoded.userId).toBe(mockAddress.toLowerCase());
+      }
+    });
+
+    it('deve retornar erro se o nonce não existir', async () => {
+      const result = await authService.verifySignature(mockAddress, mockSignature);
+      expect(result.error).toBe('Nonce não encontrado. Por favor, solicite um novo nonce.');
+      expect(result.token).toBeUndefined();
+    });
+
+    it('deve retornar erro se a assinatura for inválida', async () => {
+      // Gera um nonce primeiro
+      authService.generateNonce(mockAddress);
+      
+      // Mock retorna endereço diferente (assinatura inválida)
+      (ethers.verifyMessage as jest.MockedFunction<typeof ethers.verifyMessage>).mockReturnValue('0x456');
+
+      const result = await authService.verifySignature(mockAddress, mockSignature);
+      expect(result.error).toBe('Assinatura inválida.');
+      expect(result.token).toBeUndefined();
+    });
+  });
+
+  describe('verifyToken', () => {
+    it('deve verificar um token válido', () => {
+      const token = jwt.sign(
+        { userId: mockAddress.toLowerCase(), address: mockAddress.toLowerCase() },
+        config.jwtSecret
+      );
+
+      const result = authService.verifyToken(token);
+      expect(result?.address).toBe(mockAddress.toLowerCase());
+      expect(result?.userId).toBe(mockAddress.toLowerCase());
+    });
+
+    it('deve retornar null para token inválido', () => {
+      const result = authService.verifyToken('token-invalido');
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getProfile', () => {
+    it('deve retornar dados do perfil', async () => {
+      const profile = await authService.getProfile(mockAddress);
+      
+      expect(profile.address).toBe(mockAddress.toLowerCase());
+      expect(profile.userId).toBe(mockAddress.toLowerCase());
+      expect(profile.createdAt).toBeDefined();
+      expect(profile.lastLogin).toBeDefined();
+    });
+  });
+
+  describe('logout', () => {
+    it('deve fazer logout com sucesso', async () => {
+      const token = jwt.sign(
+        { userId: mockAddress.toLowerCase(), address: mockAddress.toLowerCase() },
+        config.jwtSecret
+      );
+
+      const result = await authService.logout(token);
+      expect(result.success).toBe(true);
+    });
+  });
+}); 

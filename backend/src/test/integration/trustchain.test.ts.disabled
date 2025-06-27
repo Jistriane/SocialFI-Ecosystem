@@ -1,0 +1,93 @@
+import request from 'supertest';
+import { app } from '../../server';
+import { TrustChainService } from '../../services/trustchain.service';
+import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+
+jest.mock('../../services/trustchain.service');
+
+describe('TrustChain Integration Tests', () => {
+  const mockAddress = '0x123';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('GET /api/trustchain/profile/:address', () => {
+    it('deve retornar o perfil do usuário', async () => {
+      const mockProfile = {
+        address: mockAddress,
+        score: '85',
+        endorsements: '10',
+        badges: ['badge1', 'badge2']
+      };
+
+      jest.spyOn(TrustChainService.prototype, 'getProfile').mockResolvedValue(mockProfile);
+
+      const response = await request(app)
+        .get(`/api/trustchain/profile/${mockAddress}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockProfile);
+    });
+
+    it('deve retornar 500 em caso de erro', async () => {
+      jest.spyOn(TrustChainService.prototype, 'getProfile').mockRejectedValue(new Error('Erro ao buscar perfil do usuário'));
+
+      const response = await request(app)
+        .get(`/api/trustchain/profile/${mockAddress}`);
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBeDefined();
+    });
+  });
+
+  describe('GET /api/trustchain/score/:address', () => {
+    it('deve retornar o trust score', async () => {
+      const mockScore = '85';
+      jest.spyOn(TrustChainService.prototype, 'getTrustScore').mockResolvedValue(mockScore);
+
+      const response = await request(app)
+        .get(`/api/trustchain/score/${mockAddress}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.score).toBe(mockScore);
+    });
+
+    it('deve retornar 500 em caso de erro', async () => {
+      jest.spyOn(TrustChainService.prototype, 'getTrustScore').mockRejectedValue(new Error('Erro ao buscar trust score'));
+
+      const response = await request(app)
+        .get(`/api/trustchain/score/${mockAddress}`);
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBeDefined();
+    });
+  });
+
+  describe('GET /api/trustchain/leaderboard', () => {
+    it('deve retornar o leaderboard', async () => {
+      const mockLeaderboard = [
+        { address: '0x123', score: '85' },
+        { address: '0x456', score: '75' }
+      ];
+
+      jest.spyOn(TrustChainService.prototype, 'getLeaderboard').mockResolvedValue(mockLeaderboard);
+
+      const response = await request(app)
+        .get('/api/trustchain/leaderboard');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockLeaderboard);
+    });
+
+    it('deve retornar 500 em caso de erro', async () => {
+      jest.spyOn(TrustChainService.prototype, 'getLeaderboard').mockRejectedValue(new Error('Erro ao buscar leaderboard'));
+
+      const response = await request(app)
+        .get('/api/trustchain/leaderboard');
+
+      expect(response.status).toBe(500);
+      expect(response.body.error).toBeDefined();
+    });
+  });
+}); 

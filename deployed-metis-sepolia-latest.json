@@ -1,0 +1,20 @@
+/*
+Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+*/
+
+{
+    "network": "metis-sepolia",
+    "chainId": 59902,
+    "rpc": "https://sepolia.metisdevops.link",
+    "explorer": "https://sepolia-explorer.metisdevops.link",
+    "timestamp": "2025-01-27T16:30:00.000Z",
+    "deployer": "0xFE36288a99141E0C72F67E8116272fA8Aeb66F8A",
+    "contracts": {
+        "RewardsToken": "0x2a1df9d5b7D277a614607b4d8C82f3d085638751",
+        "TrustChain": "0xA6207a47E5D57f905A36756A4681607F12E66239",
+        "TradeConnect": "0xD0F5BAD2919ccC87583F7AeCb8ea0C12f141AFdf",
+        "GovGame": "0xf88d37494887b4AB0e1221b73A8056DB61538e85",
+        "EcosystemHub": "0x86A6FA81b7bA20E9B430613F820583a8473471aB"
+    }
+}

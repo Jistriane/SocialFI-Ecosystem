@@ -1,0 +1,18 @@
+/*
+Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+*/
+
+{
+    "network": "Ethereum Sepolia",
+    "chainId": 11155111,
+    "timestamp": "2025-06-26T14:10:00.000Z",
+    "deployer": "0xFE36288a99141E0C72F67E8116272fA8Aeb66F8A",
+    "contracts": {
+        "RewardsToken": "0x55c8231d1c0b93d763bc01Fa4f5f9fa1424eaaF8",
+        "TrustChain": "0x95D41cc1dD95d0C40e401987f4Bc0a7BB2343184",
+        "TradeConnect": "0x564a7a43A779d0Ebc9a0E9e9A1B8ed1583338706",
+        "GovGame": "0x7123c8538953Ab1F3Fe9ea83722f6e7133DDF9f8",
+        "EcosystemHub": "0x8204C13B075e7E90C23C7117bAF31065CE02783b"
+    }
+}

@@ -1,0 +1,27 @@
+# Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+# Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+
+name: Verificação de Assinaturas
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  check-signatures:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Instalar dependências
+        run: |
+          npm install
+      - name: Verificar assinaturas
+        run: |
+          node scripts/verify-signatures.js 

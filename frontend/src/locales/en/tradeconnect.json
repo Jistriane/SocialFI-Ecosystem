@@ -1,0 +1,81 @@
+/*
+Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+*/
+
+{
+    "dashboard": {
+        "title": "Trading Dashboard",
+        "performance": "Performance",
+        "portfolio": "Portfolio",
+        "active_trades": "Active Trades",
+        "trade_history": "Trade History"
+    },
+    "trading": {
+        "open_position": "Open Position",
+        "close_position": "Close Position",
+        "amount": "Amount",
+        "leverage": "Leverage",
+        "entry_price": "Entry Price",
+        "current_price": "Current Price",
+        "take_profit": "Take Profit",
+        "stop_loss": "Stop Loss"
+    },
+    "copy_trading": {
+        "title": "Copy Trading",
+        "available_traders": "Available Traders",
+        "my_copies": "My Copies",
+        "start_copying": "Start Copying",
+        "stop_copying": "Stop Copying",
+        "copy_amount": "Copy Amount"
+    },
+    "stats": {
+        "win_rate": "Win Rate",
+        "total_profit": "Total Profit",
+        "total_trades": "Total Trades",
+        "average_profit": "Average Profit",
+        "best_trade": "Best Trade",
+        "worst_trade": "Worst Trade",
+        "active_trades": "Active Trades",
+        "completed": "Completed",
+        "pending": "Pending",
+        "success_rate": "Success Rate"
+    },
+    "notifications": {
+        "position_opened": "Position opened successfully",
+        "position_closed": "Position closed successfully",
+        "copy_started": "Copy trading started",
+        "copy_stopped": "Copy trading stopped",
+        "take_profit_hit": "Take profit hit",
+        "stop_loss_hit": "Stop loss hit"
+    },
+    "title": "TradeConnect",
+    "description": "Trust-based P2P trading platform",
+    "subtitle": "Trade safely using the TrustChain trust system",
+    "actions": {
+        "create_trade": "Create Trade",
+        "search_offers": "Search Offers"
+    },
+    "sections": {
+        "recent_trades": "Recent Trades",
+        "how_it_works": "How It Works"
+    },
+    "empty_states": {
+        "no_trades": "No trades found",
+        "no_trades_desc": "Create your first trade to get started"
+    },
+    "how_it_works": {
+        "step1": {
+            "title": "Create an Offer",
+            "description": "Define what you want to trade and your conditions"
+        },
+        "step2": {
+            "title": "Find Partners",
+            "description": "Use TrustChain to find trustworthy users"
+        },
+        "step3": {
+            "title": "Trade Safely",
+            "description": "Execute the transaction with smart contract guarantees"
+        }
+    }
+}

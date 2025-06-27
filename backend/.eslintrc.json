@@ -1,0 +1,30 @@
+/*
+Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+*/
+
+{
+  "env": {
+    "node": true,
+    "es2020": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-console": "warn"
+  },
+  "ignorePatterns": ["dist/", "node_modules/", "coverage/"]
+} 

@@ -1,0 +1,40 @@
+/*
+Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+*/
+
+{
+    "profile": {
+        "title": "Perfil na Cadeia de Confiança",
+        "reputation_score": "Pontuação de Reputação",
+        "total_score": "Pontuação Total",
+        "categories": {
+            "trading": "Trading",
+            "governance": "Governança",
+            "community": "Comunidade",
+            "development": "Desenvolvimento"
+        }
+    },
+    "actions": {
+        "update_profile": "Atualizar Perfil",
+        "endorse_user": "Endossar Usuário",
+        "revoke_endorsement": "Revogar Endosso",
+        "report_user": "Reportar Usuário"
+    },
+    "validation": {
+        "minimum_score": "Pontuação mínima necessária",
+        "already_endorsed": "Você já endossou este usuário",
+        "cannot_self_endorse": "Você não pode endossar a si mesmo"
+    },
+    "stats": {
+        "total_endorsements": "Total de Endossos",
+        "endorsements_received": "Endossos Recebidos",
+        "endorsements_given": "Endossos Dados",
+        "trust_score": "Pontuação de Confiança"
+    },
+    "notifications": {
+        "endorsement_received": "Você recebeu um novo endosso",
+        "endorsement_revoked": "Um endosso foi revogado",
+        "profile_updated": "Perfil atualizado com sucesso"
+    }
+}
