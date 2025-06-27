@@ -240,7 +240,7 @@ Specialist in developing complex DeFi systems with over 10 years of experience i
 
 📧 **Email**: jistriane@live.com  
 🌐 **Specialties**: DeFi, Smart Contracts, AI, Blockchain Automation  
-💼 **LinkedIn**: [Jistriane Brunielli](https://linkedin.com/in/jistriane)  
+💼 **LinkedIn**: [Jistriane Brunielli](https://www.linkedin.com/in/jibso)  
 🐙 **GitHub**: [@jistriane](https://github.com/jistriane)
 
 ## License
