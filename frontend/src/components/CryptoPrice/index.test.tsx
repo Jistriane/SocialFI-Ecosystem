@@ -137,4 +137,4 @@ describe('CryptoPrice', () => {
 
     expect(mockGetQuote).toHaveBeenCalledWith('BTC')
   })
-}) 
+})

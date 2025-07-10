@@ -3,7 +3,7 @@
 
 import { app, server } from './server';
 import { config } from './config';
-import { logger } from './config/logger';
+import { logger } from './config/logger.serverless';
 
 const PORT = config.port;
 

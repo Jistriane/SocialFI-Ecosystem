@@ -4,7 +4,7 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config';
-import { logger } from './config/logger';
+import { logger } from './config/logger.serverless';
 import { errorHandler } from './middlewares/errorHandler';
 import { setupWebSocket } from './config/socket';
 import { authRoutes } from './routes/auth.routes';

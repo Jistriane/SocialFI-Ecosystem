@@ -4,7 +4,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { User, Wallet, Activity, Settings, Edit, Save, X, Copy, AlertCircle, CheckCircle, TrendingUp, Award } from 'lucide-react'
+import {
+  User,
+  Wallet,
+  Activity,
+  Settings,
+  Edit,
+  Save,
+  X,
+  Copy,
+  AlertCircle,
+  CheckCircle,
+  TrendingUp,
+  Award,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useLocale } from '@/contexts/LocaleContext'
 import { useAccount, useBalance } from 'wagmi'
@@ -38,7 +51,7 @@ export default function ProfilePage() {
   const router = useRouter()
   const [showEditModal, setShowEditModal] = useState(false)
   const [copiedAddress, setCopiedAddress] = useState(false)
-  
+
   // User profile data
   const [userProfile, setUserProfile] = useState<UserProfile>({
     displayName: '',
@@ -48,8 +61,8 @@ export default function ProfilePage() {
     socialLinks: {
       twitter: '',
       github: '',
-      website: ''
-    }
+      website: '',
+    },
   })
 
   // Form data for editing
@@ -61,8 +74,8 @@ export default function ProfilePage() {
     socialLinks: {
       twitter: '',
       github: '',
-      website: ''
-    }
+      website: '',
+    },
   })
 
   // User stats
@@ -72,7 +85,7 @@ export default function ProfilePage() {
     totalVolume: '0',
     reputationLevel: 'Iniciante',
     joinDate: '',
-    lastActivity: ''
+    lastActivity: '',
   })
 
   // Get wallet balance
@@ -92,18 +105,20 @@ export default function ProfilePage() {
         socialLinks: {
           twitter: '',
           github: '',
-          website: ''
-        }
+          website: '',
+        },
       }
 
       // Dados baseados na carteira real - sem simulação
       const realStats: UserStats = {
         trustScore: 0, // Seria obtido do contrato TrustChain
         totalTransactions: 0, // Seria obtido da blockchain
-        totalVolume: balance ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol}` : '0 ETH',
+        totalVolume: balance
+          ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol}`
+          : '0 ETH',
         reputationLevel: 'Novo',
         joinDate: new Date().toLocaleDateString('pt-BR'),
-        lastActivity: 'Agora'
+        lastActivity: 'Agora',
       }
 
       setUserProfile(realProfile)
@@ -128,7 +143,7 @@ export default function ProfilePage() {
     try {
       // Aqui seria a chamada real para salvar o perfil
       console.log('Salvando perfil:', editForm)
-      
+
       setUserProfile(editForm)
       setShowEditModal(false)
       alert('Perfil atualizado com sucesso!')
@@ -148,25 +163,36 @@ export default function ProfilePage() {
 
   const getReputationColor = (level: string) => {
     switch (level) {
-      case 'Iniciante': return 'text-gray-500'
-      case 'Intermediário': return 'text-blue-500'
-      case 'Confiável': return 'text-green-500'
-      case 'Expert': return 'text-purple-500'
-      case 'Master': return 'text-yellow-500'
-      default: return 'text-gray-500'
+      case 'Iniciante':
+        return 'text-gray-500'
+      case 'Intermediário':
+        return 'text-blue-500'
+      case 'Confiável':
+        return 'text-green-500'
+      case 'Expert':
+        return 'text-purple-500'
+      case 'Master':
+        return 'text-yellow-500'
+      default:
+        return 'text-gray-500'
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-    <div className="container mx-auto p-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="container mx-auto p-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           {/* Connection Status */}
           {!isConnected && (
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
               <AlertCircle className="w-12 h-12 mx-auto mb-4 text-yellow-500" />
-              <h3 className="text-lg font-semibold text-white mb-2">Conecte sua Carteira</h3>
-              <p className="text-slate-300 mb-4">Para visualizar seu perfil, você precisa conectar sua carteira primeiro.</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Conecte sua Carteira
+              </h3>
+              <p className="text-slate-300 mb-4">
+                Para visualizar seu perfil, você precisa conectar sua carteira
+                primeiro.
+              </p>
               <ConnectButton.Custom>
                 {({ account, chain, openConnectModal, mounted }) => {
                   return (
@@ -209,9 +235,10 @@ export default function ProfilePage() {
                           <Copy className="w-4 h-4" />
                         )}
                       </button>
-          </div>
+                    </div>
                     <p className="text-slate-300 mb-4">
-                      {userProfile.bio || 'Participante do ecossistema SocialFI'}
+                      {userProfile.bio ||
+                        'Participante do ecossistema SocialFI'}
                     </p>
                     <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-slate-400">
                       <span>Membro desde: {userStats.joinDate}</span>
@@ -220,14 +247,14 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button 
+                    <Button
                       onClick={() => setShowEditModal(true)}
                       className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       <Edit className="w-4 h-4 mr-2" />
                       {t('profile.actions.edit_profile', 'common')}
                     </Button>
-                    <Button 
+                    <Button
                       variant="outline"
                       onClick={handleOpenSettings}
                       className="border-slate-600 text-slate-300 hover:bg-slate-700"
@@ -237,69 +264,105 @@ export default function ProfilePage() {
                     </Button>
                   </div>
                 </div>
-        </section>
+              </section>
 
-        {/* Profile Stats */}
+              {/* Profile Stats */}
               <section className="grid md:grid-cols-4 gap-6">
                 <div className="p-6 bg-slate-800/50 border border-slate-700 rounded-lg text-center space-y-3">
                   <Wallet className="w-8 h-8 mx-auto text-blue-400" />
-                  <h3 className="text-lg font-semibold text-white">{t('profile.wallet', 'common')}</h3>
+                  <h3 className="text-lg font-semibold text-white">
+                    {t('profile.wallet', 'common')}
+                  </h3>
                   <div className="space-y-1">
                     <p className="text-2xl font-bold text-white">
-                      {balance ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol}` : '0 ETH'}
+                      {balance
+                        ? `${parseFloat(balance.formatted).toFixed(4)} ${
+                            balance.symbol
+                          }`
+                        : '0 ETH'}
                     </p>
-                    <p className="text-sm text-slate-400">{t('profile.main_balance', 'common')}</p>
+                    <p className="text-sm text-slate-400">
+                      {t('profile.main_balance', 'common')}
+                    </p>
                   </div>
                 </div>
 
                 <div className="p-6 bg-slate-800/50 border border-slate-700 rounded-lg text-center space-y-3">
                   <Activity className="w-8 h-8 mx-auto text-green-400" />
-                  <h3 className="text-lg font-semibold text-white">{t('profile.trust_score', 'common')}</h3>
-            <div className="space-y-1">
-                    <p className="text-2xl font-bold text-white">{userStats.trustScore}</p>
-                    <p className="text-sm text-slate-400">{t('profile.trust_score_desc', 'common')}</p>
-            </div>
-          </div>
+                  <h3 className="text-lg font-semibold text-white">
+                    {t('profile.trust_score', 'common')}
+                  </h3>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-bold text-white">
+                      {userStats.trustScore}
+                    </p>
+                    <p className="text-sm text-slate-400">
+                      {t('profile.trust_score_desc', 'common')}
+                    </p>
+                  </div>
+                </div>
 
                 <div className="p-6 bg-slate-800/50 border border-slate-700 rounded-lg text-center space-y-3">
                   <TrendingUp className="w-8 h-8 mx-auto text-purple-400" />
-                  <h3 className="text-lg font-semibold text-white">Volume Total</h3>
-            <div className="space-y-1">
-                    <p className="text-2xl font-bold text-white">{userStats.totalVolume}</p>
+                  <h3 className="text-lg font-semibold text-white">
+                    Volume Total
+                  </h3>
+                  <div className="space-y-1">
+                    <p className="text-2xl font-bold text-white">
+                      {userStats.totalVolume}
+                    </p>
                     <p className="text-sm text-slate-400">Negociado</p>
-            </div>
-          </div>
+                  </div>
+                </div>
 
                 <div className="p-6 bg-slate-800/50 border border-slate-700 rounded-lg text-center space-y-3">
                   <Award className="w-8 h-8 mx-auto text-yellow-400" />
-                  <h3 className="text-lg font-semibold text-white">Reputação</h3>
-            <div className="space-y-1">
-                    <p className={`text-2xl font-bold ${getReputationColor(userStats.reputationLevel)}`}>
+                  <h3 className="text-lg font-semibold text-white">
+                    Reputação
+                  </h3>
+                  <div className="space-y-1">
+                    <p
+                      className={`text-2xl font-bold ${getReputationColor(
+                        userStats.reputationLevel,
+                      )}`}
+                    >
                       {userStats.reputationLevel}
                     </p>
                     <p className="text-sm text-slate-400">Nível atual</p>
-            </div>
-          </div>
-        </section>
+                  </div>
+                </div>
+              </section>
 
-        {/* Recent Activity */}
-        <section className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">{t('profile.recent_activity', 'common')}</h2>
+              {/* Recent Activity */}
+              <section className="space-y-6">
+                <h2 className="text-2xl font-bold text-white">
+                  {t('profile.recent_activity', 'common')}
+                </h2>
                 <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-8 text-center text-slate-400">
                   <Activity className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg mb-2">{t('profile.no_activity', 'common')}</p>
-                  <p className="text-sm">{t('profile.no_activity_desc', 'common')}</p>
-          </div>
-        </section>
+                  <p className="text-lg mb-2">
+                    {t('profile.no_activity', 'common')}
+                  </p>
+                  <p className="text-sm">
+                    {t('profile.no_activity_desc', 'common')}
+                  </p>
+                </div>
+              </section>
 
               {/* Additional Stats */}
               <section className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Estatísticas Detalhadas</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">
+                  Estatísticas Detalhadas
+                </h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-300">Total de Transações:</span>
-                      <span className="text-white font-semibold">{userStats.totalTransactions}</span>
+                      <span className="text-slate-300">
+                        Total de Transações:
+                      </span>
+                      <span className="text-white font-semibold">
+                        {userStats.totalTransactions}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-300">Propostas Criadas:</span>
@@ -312,11 +375,15 @@ export default function ProfilePage() {
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-300">Conexões de Confiança:</span>
+                      <span className="text-slate-300">
+                        Conexões de Confiança:
+                      </span>
                       <span className="text-white font-semibold">8</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-300">Negociações Completadas:</span>
+                      <span className="text-slate-300">
+                        Negociações Completadas:
+                      </span>
                       <span className="text-white font-semibold">15</span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -325,7 +392,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-        </section>
+              </section>
             </>
           )}
         </div>
@@ -353,7 +420,9 @@ export default function ProfilePage() {
                 <input
                   type="text"
                   value={editForm.displayName}
-                  onChange={(e) => setEditForm({...editForm, displayName: e.target.value})}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, displayName: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Seu nome de exibição"
                 />
@@ -364,7 +433,9 @@ export default function ProfilePage() {
                 </label>
                 <textarea
                   value={editForm.bio}
-                  onChange={(e) => setEditForm({...editForm, bio: e.target.value})}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, bio: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[100px]"
                   placeholder="Conte um pouco sobre você..."
                 />
@@ -376,57 +447,85 @@ export default function ProfilePage() {
                 <input
                   type="email"
                   value={editForm.email}
-                  onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, email: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="seu@email.com"
                 />
               </div>
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-slate-300">Links Sociais</h4>
+                <h4 className="text-sm font-medium text-slate-300">
+                  Links Sociais
+                </h4>
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Twitter</label>
+                  <label className="block text-xs text-slate-400 mb-1">
+                    Twitter
+                  </label>
                   <input
                     type="text"
                     value={editForm.socialLinks.twitter}
-                    onChange={(e) => setEditForm({
-                      ...editForm, 
-                      socialLinks: {...editForm.socialLinks, twitter: e.target.value}
-                    })}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        socialLinks: {
+                          ...editForm.socialLinks,
+                          twitter: e.target.value,
+                        },
+                      })
+                    }
                     className="w-full p-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="@seu_usuario"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">GitHub</label>
+                  <label className="block text-xs text-slate-400 mb-1">
+                    GitHub
+                  </label>
                   <input
                     type="text"
                     value={editForm.socialLinks.github}
-                    onChange={(e) => setEditForm({
-                      ...editForm, 
-                      socialLinks: {...editForm.socialLinks, github: e.target.value}
-                    })}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        socialLinks: {
+                          ...editForm.socialLinks,
+                          github: e.target.value,
+                        },
+                      })
+                    }
                     className="w-full p-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="github.com/seu-usuario"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Website</label>
+                  <label className="block text-xs text-slate-400 mb-1">
+                    Website
+                  </label>
                   <input
                     type="text"
                     value={editForm.socialLinks.website}
-                    onChange={(e) => setEditForm({
-                      ...editForm, 
-                      socialLinks: {...editForm.socialLinks, website: e.target.value}
-                    })}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        socialLinks: {
+                          ...editForm.socialLinks,
+                          website: e.target.value,
+                        },
+                      })
+                    }
                     className="w-full p-2 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="seu-site.com"
                   />
                 </div>
               </div>
               <div className="bg-slate-700/50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-slate-300 mb-2">💡 Dica:</h4>
+                <h4 className="text-sm font-medium text-slate-300 mb-2">
+                  💡 Dica:
+                </h4>
                 <p className="text-sm text-slate-400">
-                  Um perfil completo ajuda outros usuários a confiar mais em você, aumentando seu Trust Score no ecossistema.
+                  Um perfil completo ajuda outros usuários a confiar mais em
+                  você, aumentando seu Trust Score no ecossistema.
                 </p>
               </div>
             </div>

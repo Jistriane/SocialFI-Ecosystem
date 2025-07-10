@@ -4,7 +4,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { TrendingUp, ArrowUpDown, Clock, CheckCircle, Plus, Search, X, Shield, Users, Loader2 } from 'lucide-react'
+import {
+  TrendingUp,
+  ArrowUpDown,
+  Clock,
+  CheckCircle,
+  Plus,
+  Search,
+  X,
+  Shield,
+  Users,
+  Loader2,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useLocale } from '@/contexts/LocaleContext'
 import { useAccount, useBalance } from 'wagmi'
@@ -39,7 +50,7 @@ export default function TradeConnectPage() {
     tokenOffered: '',
     tokenWanted: '',
     minAmount: '',
-    maxAmount: ''
+    maxAmount: '',
   })
 
   // Carregar trades reais do contrato
@@ -50,19 +61,20 @@ export default function TradeConnectPage() {
       try {
         setLoading(true)
         const contractTrades = await getTrades()
-        
+
         // Converter dados do contrato para o formato da interface
-        const formattedTrades: Trade[] = contractTrades?.map((trade: any, index: number) => ({
-          id: trade.id?.toString() || index.toString(),
-          maker: trade.maker || '',
-          tokenOffered: trade.tokenOffered || '',
-          tokenWanted: trade.tokenWanted || '',
-          amountOffered: trade.amountOffered?.toString() || '0',
-          amountWanted: trade.amountWanted?.toString() || '0',
-          deadline: Number(trade.deadline) || 0,
-          status: trade.isActive ? 'Active' : 'Completed',
-          createdAt: Number(trade.createdAt) || Date.now()
-        })) || []
+        const formattedTrades: Trade[] =
+          contractTrades?.map((trade: any, index: number) => ({
+            id: trade.id?.toString() || index.toString(),
+            maker: trade.maker || '',
+            tokenOffered: trade.tokenOffered || '',
+            tokenWanted: trade.tokenWanted || '',
+            amountOffered: trade.amountOffered?.toString() || '0',
+            amountWanted: trade.amountWanted?.toString() || '0',
+            deadline: Number(trade.deadline) || 0,
+            status: trade.isActive ? 'Active' : 'Completed',
+            createdAt: Number(trade.createdAt) || Date.now(),
+          })) || []
 
         setTrades(formattedTrades)
       } catch (error) {
@@ -71,7 +83,7 @@ export default function TradeConnectPage() {
         toast({
           title: 'Erro',
           description: 'Não foi possível carregar as negociações',
-          variant: 'destructive'
+          variant: 'destructive',
         })
       } finally {
         setLoading(false)
@@ -88,49 +100,49 @@ export default function TradeConnectPage() {
       tokenWanted: '',
       amountOffered: '',
       amountWanted: '',
-      duration: '24'
+      duration: '24',
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault()
-      
+
       if (!address || !isConnected) {
         toast({
           title: 'Erro',
           description: 'Conecte sua carteira primeiro',
-          variant: 'destructive'
+          variant: 'destructive',
         })
         return
       }
 
       try {
         setLoading(true)
-        
+
         // Preparar dados para o contrato
         const tradeParams = {
           tokenOffered: formData.tokenOffered,
           tokenWanted: formData.tokenWanted,
           amountOffered: formData.amountOffered,
           amountWanted: formData.amountWanted,
-          duration: parseInt(formData.duration) * 3600 // converter horas para segundos
+          duration: parseInt(formData.duration) * 3600, // converter horas para segundos
         }
 
         await createTrade(tradeParams)
-        
+
         toast({
           title: 'Sucesso!',
           description: 'Negociação criada com sucesso!',
         })
-        
+
         setShowCreateModal(false)
-        
+
         // Reset form
         setFormData({
           tokenOffered: '',
           tokenWanted: '',
           amountOffered: '',
           amountWanted: '',
-          duration: '24'
+          duration: '24',
         })
 
         // Recarregar trades
@@ -139,8 +151,9 @@ export default function TradeConnectPage() {
         console.error('Erro ao criar trade:', error)
         toast({
           title: 'Erro',
-          description: 'Não foi possível criar a negociação. Verifique se você tem saldo suficiente.',
-          variant: 'destructive'
+          description:
+            'Não foi possível criar a negociação. Verifique se você tem saldo suficiente.',
+          variant: 'destructive',
         })
       } finally {
         setLoading(false)
@@ -152,7 +165,9 @@ export default function TradeConnectPage() {
         <div className="bg-slate-800 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-700">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Criar Negociação</h2>
+              <h2 className="text-2xl font-bold text-white">
+                Criar Negociação
+              </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
                 className="text-slate-400 hover:text-white transition-colors"
@@ -161,7 +176,7 @@ export default function TradeConnectPage() {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -169,7 +184,9 @@ export default function TradeConnectPage() {
                 </label>
                 <select
                   value={formData.tokenOffered}
-                  onChange={(e) => setFormData({...formData, tokenOffered: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tokenOffered: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-metis-500 focus:border-transparent"
                   aria-label="Selecionar token oferecido"
                   required
@@ -190,7 +207,9 @@ export default function TradeConnectPage() {
                   type="number"
                   step="0.000001"
                   value={formData.amountOffered}
-                  onChange={(e) => setFormData({...formData, amountOffered: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, amountOffered: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-metis-500 focus:border-transparent"
                   placeholder="0.00"
                   required
@@ -203,7 +222,9 @@ export default function TradeConnectPage() {
                 </label>
                 <select
                   value={formData.tokenWanted}
-                  onChange={(e) => setFormData({...formData, tokenWanted: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tokenWanted: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-metis-500 focus:border-transparent"
                   aria-label="Selecionar token desejado"
                   required
@@ -224,7 +245,9 @@ export default function TradeConnectPage() {
                   type="number"
                   step="0.000001"
                   value={formData.amountWanted}
-                  onChange={(e) => setFormData({...formData, amountWanted: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, amountWanted: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-metis-500 focus:border-transparent"
                   placeholder="0.00"
                   required
@@ -237,7 +260,9 @@ export default function TradeConnectPage() {
                 </label>
                 <select
                   value={formData.duration}
-                  onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, duration: e.target.value })
+                  }
                   className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-metis-500 focus:border-transparent"
                   aria-label="Selecionar duração da negociação"
                 >
@@ -253,8 +278,13 @@ export default function TradeConnectPage() {
                 <div className="flex items-start space-x-3">
                   <Shield className="w-5 h-5 text-metis-400 mt-0.5" />
                   <div className="text-sm text-slate-300">
-                    <p className="font-medium text-white mb-1">Segurança TrustChain</p>
-                    <p>Sua pontuação de confiança será verificada antes de criar a negociação.</p>
+                    <p className="font-medium text-white mb-1">
+                      Segurança TrustChain
+                    </p>
+                    <p>
+                      Sua pontuação de confiança será verificada antes de criar
+                      a negociação.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -274,7 +304,9 @@ export default function TradeConnectPage() {
                   className="flex-1 bg-metis-600 hover:bg-metis-700"
                   disabled={loading}
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : null}
                   Criar Negociação
                 </Button>
               </div>
@@ -287,13 +319,27 @@ export default function TradeConnectPage() {
 
   // Modal de Buscar Ofertas
   const SearchOffersModal = () => {
-    const filteredTrades = trades.filter(trade => {
-      const matchesOffered = !searchFilters.tokenOffered || trade.tokenOffered.toLowerCase().includes(searchFilters.tokenOffered.toLowerCase())
-      const matchesWanted = !searchFilters.tokenWanted || trade.tokenWanted.toLowerCase().includes(searchFilters.tokenWanted.toLowerCase())
-      const matchesMinAmount = !searchFilters.minAmount || parseFloat(trade.amountOffered) >= parseFloat(searchFilters.minAmount)
-      const matchesMaxAmount = !searchFilters.maxAmount || parseFloat(trade.amountOffered) <= parseFloat(searchFilters.maxAmount)
-      
-      return matchesOffered && matchesWanted && matchesMinAmount && matchesMaxAmount
+    const filteredTrades = trades.filter((trade) => {
+      const matchesOffered =
+        !searchFilters.tokenOffered ||
+        trade.tokenOffered
+          .toLowerCase()
+          .includes(searchFilters.tokenOffered.toLowerCase())
+      const matchesWanted =
+        !searchFilters.tokenWanted ||
+        trade.tokenWanted
+          .toLowerCase()
+          .includes(searchFilters.tokenWanted.toLowerCase())
+      const matchesMinAmount =
+        !searchFilters.minAmount ||
+        parseFloat(trade.amountOffered) >= parseFloat(searchFilters.minAmount)
+      const matchesMaxAmount =
+        !searchFilters.maxAmount ||
+        parseFloat(trade.amountOffered) <= parseFloat(searchFilters.maxAmount)
+
+      return (
+        matchesOffered && matchesWanted && matchesMinAmount && matchesMaxAmount
+      )
     })
 
     const handleAcceptTrade = async (tradeId: string) => {
@@ -301,7 +347,7 @@ export default function TradeConnectPage() {
         toast({
           title: 'Erro',
           description: 'Conecte sua carteira primeiro',
-          variant: 'destructive'
+          variant: 'destructive',
         })
         return
       }
@@ -310,12 +356,12 @@ export default function TradeConnectPage() {
         setLoading(true)
         // Implementar aceitação de trade no contrato
         console.log('Aceitando trade:', tradeId)
-        
+
         toast({
           title: 'Sucesso!',
           description: 'Negociação aceita com sucesso!',
         })
-        
+
         // Recarregar trades
         window.location.reload()
       } catch (error) {
@@ -323,7 +369,7 @@ export default function TradeConnectPage() {
         toast({
           title: 'Erro',
           description: 'Não foi possível aceitar a negociação',
-          variant: 'destructive'
+          variant: 'destructive',
         })
       } finally {
         setLoading(false)
@@ -344,35 +390,55 @@ export default function TradeConnectPage() {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            
+
             {/* Filtros */}
             <div className="grid md:grid-cols-4 gap-4 mb-6">
               <input
                 type="text"
                 placeholder="Token oferecido"
                 value={searchFilters.tokenOffered}
-                onChange={(e) => setSearchFilters({...searchFilters, tokenOffered: e.target.value})}
+                onChange={(e) =>
+                  setSearchFilters({
+                    ...searchFilters,
+                    tokenOffered: e.target.value,
+                  })
+                }
                 className="p-3 bg-slate-700 border border-slate-600 rounded-lg text-white"
               />
               <input
                 type="text"
                 placeholder="Token desejado"
                 value={searchFilters.tokenWanted}
-                onChange={(e) => setSearchFilters({...searchFilters, tokenWanted: e.target.value})}
+                onChange={(e) =>
+                  setSearchFilters({
+                    ...searchFilters,
+                    tokenWanted: e.target.value,
+                  })
+                }
                 className="p-3 bg-slate-700 border border-slate-600 rounded-lg text-white"
               />
               <input
                 type="number"
                 placeholder="Valor mínimo"
                 value={searchFilters.minAmount}
-                onChange={(e) => setSearchFilters({...searchFilters, minAmount: e.target.value})}
+                onChange={(e) =>
+                  setSearchFilters({
+                    ...searchFilters,
+                    minAmount: e.target.value,
+                  })
+                }
                 className="p-3 bg-slate-700 border border-slate-600 rounded-lg text-white"
               />
               <input
                 type="number"
                 placeholder="Valor máximo"
                 value={searchFilters.maxAmount}
-                onChange={(e) => setSearchFilters({...searchFilters, maxAmount: e.target.value})}
+                onChange={(e) =>
+                  setSearchFilters({
+                    ...searchFilters,
+                    maxAmount: e.target.value,
+                  })
+                }
                 className="p-3 bg-slate-700 border border-slate-600 rounded-lg text-white"
               />
             </div>
@@ -387,20 +453,28 @@ export default function TradeConnectPage() {
               ) : filteredTrades.length === 0 ? (
                 <div className="text-center py-8">
                   <Search className="w-12 h-12 mx-auto mb-4 text-slate-500" />
-                  <p className="text-slate-400">Nenhuma negociação encontrada</p>
+                  <p className="text-slate-400">
+                    Nenhuma negociação encontrada
+                  </p>
                 </div>
               ) : (
                 filteredTrades.map((trade) => (
-                  <div key={trade.id} className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
+                  <div
+                    key={trade.id}
+                    className="bg-slate-700/50 rounded-lg p-4 border border-slate-600"
+                  >
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <div className="flex items-center space-x-2 mb-2">
                           <ArrowUpDown className="w-4 h-4 text-metis-400" />
                           <span className="font-medium text-white">
-                            {trade.amountOffered} {trade.tokenOffered} → {trade.amountWanted} {trade.tokenWanted}
+                            {trade.amountOffered} {trade.tokenOffered} →{' '}
+                            {trade.amountWanted} {trade.tokenWanted}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-400">Por: {trade.maker.slice(0, 10)}...</p>
+                        <p className="text-sm text-slate-400">
+                          Por: {trade.maker.slice(0, 10)}...
+                        </p>
                       </div>
                       <div className="text-right">
                         <div className="flex items-center space-x-1 mb-1">
@@ -409,9 +483,13 @@ export default function TradeConnectPage() {
                             {new Date(trade.deadline).toLocaleDateString()}
                           </span>
                         </div>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          trade.status === 'Active' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-                        }`}>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            trade.status === 'Active'
+                              ? 'bg-green-500/20 text-green-400'
+                              : 'bg-gray-500/20 text-gray-400'
+                          }`}
+                        >
                           {trade.status}
                         </span>
                       </div>
@@ -422,7 +500,9 @@ export default function TradeConnectPage() {
                         disabled={loading}
                         className="w-full bg-metis-600 hover:bg-metis-700"
                       >
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                        {loading ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : null}
                         Aceitar Negociação
                       </Button>
                     )}
@@ -449,7 +529,8 @@ export default function TradeConnectPage() {
             </div>
             <h1 className="text-4xl font-bold text-white">TradeConnect</h1>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Plataforma descentralizada de negociação peer-to-peer com segurança blockchain
+              Plataforma descentralizada de negociação peer-to-peer com
+              segurança blockchain
             </p>
           </section>
 
@@ -457,8 +538,13 @@ export default function TradeConnectPage() {
           {!isConnected ? (
             <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
               <Shield className="w-12 h-12 mx-auto mb-4 text-yellow-500" />
-              <h3 className="text-lg font-semibold text-white mb-2">Conecte sua Carteira</h3>
-              <p className="text-slate-300 mb-4">Para usar o TradeConnect, você precisa conectar sua carteira primeiro.</p>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Conecte sua Carteira
+              </h3>
+              <p className="text-slate-300 mb-4">
+                Para usar o TradeConnect, você precisa conectar sua carteira
+                primeiro.
+              </p>
               <ConnectButton.Custom>
                 {({ account, chain, openConnectModal, mounted }) => {
                   return (
@@ -479,23 +565,35 @@ export default function TradeConnectPage() {
                 <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
                   <TrendingUp className="w-8 h-8 mx-auto mb-3 text-indigo-400" />
                   <div className="text-2xl font-bold text-white mb-1">
-                    {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : trades.length}
+                    {loading ? (
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                    ) : (
+                      trades.length
+                    )}
                   </div>
-                  <div className="text-slate-400 text-sm">Negociações Ativas</div>
+                  <div className="text-slate-400 text-sm">
+                    Negociações Ativas
+                  </div>
                 </div>
-                
+
                 <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
                   <Users className="w-8 h-8 mx-auto mb-3 text-green-400" />
                   <div className="text-2xl font-bold text-white mb-1">
-                    {balance ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol}` : '0.0000'}
+                    {balance
+                      ? `${parseFloat(balance.formatted).toFixed(4)} ${
+                          balance.symbol
+                        }`
+                      : '0.0000'}
                   </div>
                   <div className="text-slate-400 text-sm">Seu Saldo</div>
                 </div>
-                
+
                 <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
                   <CheckCircle className="w-8 h-8 mx-auto mb-3 text-yellow-400" />
                   <div className="text-2xl font-bold text-white mb-1">100%</div>
-                  <div className="text-slate-400 text-sm">Segurança Blockchain</div>
+                  <div className="text-slate-400 text-sm">
+                    Segurança Blockchain
+                  </div>
                 </div>
               </div>
 
@@ -522,7 +620,9 @@ export default function TradeConnectPage() {
 
               {/* Recent Trades */}
               <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
-                <h2 className="text-xl font-bold text-white mb-4">Negociações Recentes</h2>
+                <h2 className="text-xl font-bold text-white mb-4">
+                  Negociações Recentes
+                </h2>
                 {loading ? (
                   <div className="text-center py-8">
                     <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-indigo-500" />
@@ -531,20 +631,30 @@ export default function TradeConnectPage() {
                 ) : trades.length === 0 ? (
                   <div className="text-center py-8">
                     <TrendingUp className="w-12 h-12 mx-auto mb-4 text-slate-500" />
-                    <p className="text-slate-400">Nenhuma negociação encontrada</p>
-                    <p className="text-slate-500 text-sm mt-2">Seja o primeiro a criar uma negociação!</p>
+                    <p className="text-slate-400">
+                      Nenhuma negociação encontrada
+                    </p>
+                    <p className="text-slate-500 text-sm mt-2">
+                      Seja o primeiro a criar uma negociação!
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {trades.slice(0, 5).map((trade) => (
-                      <div key={trade.id} className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg">
+                      <div
+                        key={trade.id}
+                        className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg"
+                      >
                         <div className="flex items-center space-x-3">
                           <ArrowUpDown className="w-5 h-5 text-indigo-400" />
                           <div>
                             <div className="text-white font-medium">
-                              {trade.amountOffered} {trade.tokenOffered} → {trade.amountWanted} {trade.tokenWanted}
+                              {trade.amountOffered} {trade.tokenOffered} →{' '}
+                              {trade.amountWanted} {trade.tokenWanted}
                             </div>
-                            <div className="text-slate-400 text-sm">Por: {trade.maker.slice(0, 10)}...</div>
+                            <div className="text-slate-400 text-sm">
+                              Por: {trade.maker.slice(0, 10)}...
+                            </div>
                           </div>
                         </div>
                         <div className="text-right">
@@ -554,9 +664,13 @@ export default function TradeConnectPage() {
                               {new Date(trade.deadline).toLocaleDateString()}
                             </span>
                           </div>
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            trade.status === 'Active' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-                          }`}>
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              trade.status === 'Active'
+                                ? 'bg-green-500/20 text-green-400'
+                                : 'bg-gray-500/20 text-gray-400'
+                            }`}
+                          >
                             {trade.status}
                           </span>
                         </div>

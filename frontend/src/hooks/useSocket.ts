@@ -70,28 +70,31 @@ export const useSocket = (options: UseSocketOptions = {}) => {
     }
   }, [autoConnect, address, connect, disconnect])
 
-  const emit = useCallback(<T = any>(event: string, data?: T) => {
-    if (!socket) return
-    socket.emit(event, data)
-  }, [socket])
+  const emit = useCallback(
+    <T = any>(event: string, data?: T) => {
+      if (!socket) return
+      socket.emit(event, data)
+    },
+    [socket],
+  )
 
-  const on = useCallback(<T = any>(
-    event: string,
-    callback: (data: T) => void
-  ) => {
-    if (!socket) return () => {}
-    socket.on(event, callback)
-    return () => socket.off(event, callback)
-  }, [socket])
+  const on = useCallback(
+    <T = any>(event: string, callback: (data: T) => void) => {
+      if (!socket) return () => {}
+      socket.on(event, callback)
+      return () => socket.off(event, callback)
+    },
+    [socket],
+  )
 
-  const once = useCallback(<T = any>(
-    event: string,
-    callback: (data: T) => void
-  ) => {
-    if (!socket) return () => {}
-    socket.once(event, callback)
-    return () => socket.off(event, callback)
-  }, [socket])
+  const once = useCallback(
+    <T = any>(event: string, callback: (data: T) => void) => {
+      if (!socket) return () => {}
+      socket.once(event, callback)
+      return () => socket.off(event, callback)
+    },
+    [socket],
+  )
 
   return {
     socket,
@@ -100,9 +103,9 @@ export const useSocket = (options: UseSocketOptions = {}) => {
     disconnect,
     emit,
     on,
-    once
+    once,
   }
 }
 
 export type { Socket }
-export { SocketEvents } 
+export { SocketEvents }

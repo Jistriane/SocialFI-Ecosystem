@@ -4,82 +4,82 @@ Criado do zero por mim. Removal of this notice is prohibited for 10 years.
 */
 
 {
-    "dashboard": {
-        "title": "Painel de Governança",
-        "my_score": "Minha Pontuação",
-        "rank": "Classificação",
-        "active_proposals": "Propostas Ativas",
-        "my_proposals": "Minhas Propostas",
-        "total_votes": "Total de Votos",
-        "my_votes": "Meus Votos"
+  "dashboard": {
+    "title": "Painel de Governança",
+    "my_score": "Minha Pontuação",
+    "rank": "Classificação",
+    "active_proposals": "Propostas Ativas",
+    "my_proposals": "Minhas Propostas",
+    "total_votes": "Total de Votos",
+    "my_votes": "Meus Votos"
+  },
+  "proposals": {
+    "title": "Propostas",
+    "create": "Criar Proposta",
+    "vote": "Votar",
+    "voting_period": "Período de Votação",
+    "status": "Status",
+    "description": "Descrição"
+  },
+  "voting": {
+    "for": "A Favor",
+    "against": "Contra",
+    "abstain": "Abstenção",
+    "cast_vote": "Registrar Voto",
+    "vote_cast": "Voto Registrado"
+  },
+  "rewards": {
+    "proposal_reward": "Recompensa por Proposta",
+    "voting_reward": "Recompensa por Votação",
+    "participation_bonus": "Bônus de Participação",
+    "claim_rewards": "Resgatar Recompensas",
+    "available_rewards": "Recompensas Disponíveis"
+  },
+  "notifications": {
+    "proposal_created": "Proposta criada com sucesso",
+    "vote_registered": "Voto registrado com sucesso",
+    "proposal_executed": "Proposta executada com sucesso",
+    "rewards_claimed": "Recompensas resgatadas com sucesso",
+    "quorum_reached": "Quórum atingido",
+    "proposal_approved": "Proposta aprovada",
+    "proposal_rejected": "Proposta rejeitada"
+  },
+  "title": "GovGame",
+  "description": "Sistema de governança gamificado para decisões da comunidade",
+  "subtitle": "Participe da governança do ecossistema e ganhe recompensas por sua contribuição",
+  "actions": {
+    "new_proposal": "Nova Proposta",
+    "view_active_proposals": "Ver Propostas Ativas"
+  },
+  "stats": {
+    "votes_given": "Votos Dados",
+    "rewards": "Recompensas",
+    "proposals_created": "Propostas Criadas",
+    "participation": "Participação"
+  },
+  "sections": {
+    "active_proposals": "Propostas Ativas",
+    "leaderboard": "Ranking de Participação",
+    "how_it_works": "Como Funciona"
+  },
+  "empty_states": {
+    "no_proposals": "Nenhuma proposta ativa no momento",
+    "no_proposals_desc": "Seja o primeiro a criar uma proposta para a comunidade",
+    "leaderboard_empty": "Ranking em breve",
+    "leaderboard_empty_desc": "Participe da governança para aparecer no ranking"
+  },
+  "how_it_works": {
+    "step1": {
+      "title": "Crie Propostas",
+      "description": "Sugira melhorias ou mudanças para o ecossistema"
     },
-    "proposals": {
-        "title": "Propostas",
-        "create": "Criar Proposta",
-        "vote": "Votar",
-        "voting_period": "Período de Votação",
-        "status": "Status",
-        "description": "Descrição"
+    "step2": {
+      "title": "Vote em Propostas",
+      "description": "Participe das decisões votando nas propostas da comunidade"
     },
-    "voting": {
-        "for": "A Favor",
-        "against": "Contra",
-        "abstain": "Abstenção",
-        "cast_vote": "Registrar Voto",
-        "vote_cast": "Voto Registrado"
-    },
-    "rewards": {
-        "proposal_reward": "Recompensa por Proposta",
-        "voting_reward": "Recompensa por Votação",
-        "participation_bonus": "Bônus de Participação",
-        "claim_rewards": "Resgatar Recompensas",
-        "available_rewards": "Recompensas Disponíveis"
-    },
-    "notifications": {
-        "proposal_created": "Proposta criada com sucesso",
-        "vote_registered": "Voto registrado com sucesso",
-        "proposal_executed": "Proposta executada com sucesso",
-        "rewards_claimed": "Recompensas resgatadas com sucesso",
-        "quorum_reached": "Quórum atingido",
-        "proposal_approved": "Proposta aprovada",
-        "proposal_rejected": "Proposta rejeitada"
-    },
-    "title": "GovGame",
-    "description": "Sistema de governança gamificado para decisões da comunidade",
-    "subtitle": "Participe da governança do ecossistema e ganhe recompensas por sua contribuição",
-    "actions": {
-        "new_proposal": "Nova Proposta",
-        "view_active_proposals": "Ver Propostas Ativas"
-    },
-    "stats": {
-        "votes_given": "Votos Dados",
-        "rewards": "Recompensas",
-        "proposals_created": "Propostas Criadas",
-        "participation": "Participação"
-    },
-    "sections": {
-        "active_proposals": "Propostas Ativas",
-        "leaderboard": "Ranking de Participação",
-        "how_it_works": "Como Funciona"
-    },
-    "empty_states": {
-        "no_proposals": "Nenhuma proposta ativa no momento",
-        "no_proposals_desc": "Seja o primeiro a criar uma proposta para a comunidade",
-        "leaderboard_empty": "Ranking em breve",
-        "leaderboard_empty_desc": "Participe da governança para aparecer no ranking"
-    },
-    "how_it_works": {
-        "step1": {
-            "title": "Crie Propostas",
-            "description": "Sugira melhorias ou mudanças para o ecossistema"
-        },
-        "step2": {
-            "title": "Vote em Propostas",
-            "description": "Participe das decisões votando nas propostas da comunidade"
-        },
-        "step3": {
-            "title": "Ganhe Recompensas",
-            "description": "Receba tokens por sua participação ativa na governança"
-        }
+    "step3": {
+      "title": "Ganhe Recompensas",
+      "description": "Receba tokens por sua participação ativa na governança"
     }
+  }
 }

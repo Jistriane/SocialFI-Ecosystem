@@ -2,8 +2,8 @@
 // Criado do zero por mim. Removal of this notice is prohibited for 10 years.
 
 import { ethers, Contract } from 'ethers';
-import { profiles } from '../storage';
-import { logger } from '../config/logger';
+import { profiles } from '../storage/index.serverless';
+import { logger } from '../config/logger.serverless';
 import { config } from '../config';
 import type { Profile, LeaderboardEntry, TrustScoreEvent, EndorsementEvent } from '../types/contracts';
 

@@ -21,9 +21,16 @@ interface PriceData {
   lastUpdated: string
 }
 
-export function CryptoPrice({ symbol, currency = 'USD', className = '', showChange = true }: CryptoPriceProps) {
+export function CryptoPrice({
+  symbol,
+  currency = 'USD',
+  className = '',
+  showChange = true,
+}: CryptoPriceProps) {
   const { t } = useLocale()
-  const { getQuote, isLoading, error } = useCoinMarketCap({ defaultCurrency: currency })
+  const { getQuote, isLoading, error } = useCoinMarketCap({
+    defaultCurrency: currency,
+  })
   const [priceData, setPriceData] = useState<PriceData | null>(null)
 
   useEffect(() => {
@@ -99,4 +106,4 @@ export function CryptoPrice({ symbol, currency = 'USD', className = '', showChan
       )}
     </div>
   )
-} 
+}

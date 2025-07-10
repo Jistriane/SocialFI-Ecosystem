@@ -26,9 +26,7 @@ export default function RootLayout({
           <LocaleProvider>
             <ContractEventsProvider>
               <Header />
-              <main className="min-h-screen">
-                {children}
-              </main>
+              <main className="min-h-screen">{children}</main>
               <Toaster />
             </ContractEventsProvider>
           </LocaleProvider>
@@ -36,4 +34,4 @@ export default function RootLayout({
       </body>
     </html>
   )
-} 
+}

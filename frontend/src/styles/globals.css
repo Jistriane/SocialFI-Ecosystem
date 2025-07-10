@@ -5,104 +5,83 @@
 @tailwind components;
 @tailwind utilities;
 @layer base {
-     :root {
-        /* Tema escuro com acentos da Metis Hyperion */
-        --background: 215 25% 6%;
-        --foreground: 0 0% 98%;
-        --card: 215 25% 8%;
-        --card-foreground: 0 0% 98%;
-        --popover: 215 25% 8%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 200 100% 45%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 300 100% 45%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 215 25% 12%;
-        --muted-foreground: 215 16% 65%;
-        --accent: 300 100% 45%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 84% 60%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 215 25% 20%;
-        --input: 215 25% 20%;
-        --ring: 200 100% 45%;
-        --radius: 0.75rem;
-    }
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-foreground;
-        background-attachment: fixed;
-        min-height: 100vh;
-    }
-    /* Scrollbar personalizada */
-     ::-webkit-scrollbar {
-        width: 8px;
-    }
-     ::-webkit-scrollbar-track {
-        @apply bg-slate-800;
-    }
-     ::-webkit-scrollbar-thumb {
-        @apply bg-gradient-to-b from-metis-500 to-hyperion-500 rounded-full;
-    }
-     ::-webkit-scrollbar-thumb:hover {
-        @apply from-metis-400 to-hyperion-400;
-    }
+  :root {
+    --background: 215 25% 6%;
+    --foreground: 0 0% 98%;
+    --card: 215 25% 8%;
+    --card-foreground: 0 0% 98%;
+    --popover: 215 25% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 200 100% 45%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 300 100% 45%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 215 25% 12%;
+    --muted-foreground: 215 16% 65%;
+    --accent: 300 100% 45%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 25% 20%;
+    --input: 215 25% 20%;
+    --ring: 200 100% 45%;
+    --radius: 0.75rem;
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-foreground;
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
 }
 
 @layer components {
-    /* Componentes personalizados com tema Metis */
-    .metis-card {
-        @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-xl;
-    }
-    .metis-button {
-        @apply bg-gradient-to-r from-metis-500 to-hyperion-500 hover:from-metis-400 hover:to-hyperion-400 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105;
-    }
-    .metis-button-outline {
-        @apply border-2 border-metis-500 text-metis-400 hover:bg-metis-500 hover:text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300;
-    }
-    .metis-glow {
-        @apply shadow-[0_0_15px_rgba(14, 165, 233, 0.3)] hover:shadow-[0_0_25px_rgba(217, 70, 239, 0.4)];
-    }
-    .hyperion-glow {
-        @apply shadow-[0_0_15px_rgba(217, 70, 239, 0.3)] hover:shadow-[0_0_25px_rgba(14, 165, 233, 0.4)];
-    }
-    .neon-text {
-        @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink bg-clip-text text-transparent;
-    }
-    .glass-card {
-        @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl;
-    }
-    .nav-link {
-        @apply text-slate-300 hover:text-white transition-all duration-300 relative;
-    }
-    .nav-link::after {
-        content: '';
-        @apply absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-metis-500 to-hyperion-500 transition-all duration-300;
-    }
-    .nav-link:hover::after {
-        @apply w-full;
-    }
-    .nav-link.active {
-        @apply text-white;
-    }
-    .nav-link.active::after {
-        @apply w-full;
-    }
+  .metis-card {
+    @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-xl;
+  }
+  .metis-button {
+    @apply bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg;
+  }
+  .metis-button:hover {
+    @apply from-blue-400 to-purple-400 shadow-xl scale-105;
+  }
+  .metis-button-outline {
+    @apply border-2 border-blue-500 text-blue-400 font-semibold px-6 py-3 rounded-lg transition-all duration-300;
+  }
+  .metis-button-outline:hover {
+    @apply bg-blue-500 text-white;
+  }
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl;
+  }
+  .nav-link {
+    @apply text-slate-300 transition-all duration-300 relative;
+  }
+  .nav-link:hover {
+    @apply text-white;
+  }
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300;
+  }
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+  .nav-link.active {
+    @apply text-white;
+  }
+  .nav-link.active::after {
+    @apply w-full;
+  }
 }
 
 @layer utilities {
-    /* Utilitários personalizados */
-    .text-gradient-metis {
-        @apply bg-gradient-to-r from-metis-400 to-hyperion-400 bg-clip-text text-transparent;
-    }
-    .text-gradient-neon {
-        @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink bg-clip-text text-transparent;
-    }
-    .border-gradient {
-        background: linear-gradient(135deg, #0ea5e9, #d946ef) border-box;
-        border: 2px solid transparent;
-        background-clip: padding-box, border-box;
-    }
+  .text-gradient-metis {
+    @apply bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent;
+  }
+  .text-gradient-neon {
+    @apply bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
 }

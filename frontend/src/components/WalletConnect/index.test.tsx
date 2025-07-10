@@ -163,4 +163,4 @@ describe('WalletConnect', () => {
     fireEvent.click(screen.getByText('0x1234...7890'))
     expect(openAccountModal).toHaveBeenCalled()
   })
-}) 
+})

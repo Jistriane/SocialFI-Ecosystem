@@ -6,7 +6,8 @@ import TrustChainClient from './TrustChainClient'
 
 export const metadata: Metadata = {
   title: 'TrustChain - SocialFI Ecosystem',
-  description: 'Sistema de reputação descentralizado baseado em conexões de confiança',
+  description:
+    'Sistema de reputação descentralizado baseado em conexões de confiança',
 }
 
 export default function TrustChainPage() {

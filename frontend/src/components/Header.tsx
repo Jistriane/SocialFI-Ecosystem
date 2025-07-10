@@ -62,7 +62,11 @@ function NetworkSelectorCompact() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 border-blue-200 text-blue-100 hover:bg-blue-700">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2 border-blue-200 text-blue-100 hover:bg-blue-700"
+        >
           <div
             className={`w-2 h-2 rounded-full ${
               currentNetwork?.color || 'bg-gray-400'

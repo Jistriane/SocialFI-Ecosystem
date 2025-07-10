@@ -9,10 +9,13 @@ import { injectedWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets'
 import { connectorsForWallets } from '@rainbow-me/rainbowkit'
 
 // Configurar Project ID do WalletConnect (usar valor padrão se não definido)
-const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'demo-project-id'
+const walletConnectProjectId =
+  process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'demo-project-id'
 
 if (!process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID) {
-  console.warn('⚠️  NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID não definida. Usando valor padrão para desenvolvimento.')
+  console.warn(
+    '⚠️  NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID não definida. Usando valor padrão para desenvolvimento.',
+  )
 }
 
 // Definir a rede Metis Sepolia Testnet (sem ENS para evitar erros)
@@ -55,12 +58,11 @@ const ethereumSepoliaCustom: Chain = {
 const { chains, publicClient } = configureChains(
   [ethereumSepoliaCustom, metisSepoliaTestnet],
   [
-    ...(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY 
+    ...(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
       ? [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY })]
-      : []
-    ),
+      : []),
     publicProvider(),
-  ]
+  ],
 )
 
 // Configurar carteiras
@@ -163,7 +165,11 @@ export function getExplorerUrl(chainId: number): string {
 }
 
 // Função para obter a moeda nativa baseada no chainId
-export function getNativeCurrency(chainId: number): { name: string; symbol: string; decimals: number } {
+export function getNativeCurrency(chainId: number): {
+  name: string
+  symbol: string
+  decimals: number
+} {
   switch (chainId) {
     case 59902:
       return { name: 'tMETIS', symbol: 'tMETIS', decimals: 18 }
@@ -175,13 +181,19 @@ export function getNativeCurrency(chainId: number): { name: string; symbol: stri
 }
 
 // Função para obter a URL do explorer para um endereço específico
-export function getAddressExplorerUrl(address: string, chainId: number): string {
+export function getAddressExplorerUrl(
+  address: string,
+  chainId: number,
+): string {
   const baseUrl = getExplorerUrl(chainId)
   return baseUrl ? `${baseUrl}/address/${address}` : ''
 }
 
 // Função para obter a URL do explorer para uma transação específica
-export function getTransactionExplorerUrl(txHash: string, chainId: number): string {
+export function getTransactionExplorerUrl(
+  txHash: string,
+  chainId: number,
+): string {
   const baseUrl = getExplorerUrl(chainId)
   return baseUrl ? `${baseUrl}/tx/${txHash}` : ''
 }

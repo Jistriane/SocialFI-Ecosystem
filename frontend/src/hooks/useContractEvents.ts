@@ -16,7 +16,7 @@ export function useContractEvents(contractName: string, filter: EventFilter) {
   const [events, setEvents] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
-  
+
   const publicClient = usePublicClient()
   const config = getContractConfig(contractName)
 
@@ -28,7 +28,10 @@ export function useContractEvents(contractName: string, filter: EventFilter) {
       try {
         const logs = await publicClient.getLogs({
           address: config.address as Address,
-          event: config.abi.find((item: any) => item.name === filter.eventName && item.type === 'event'),
+          event: config.abi.find(
+            (item: any) =>
+              item.name === filter.eventName && item.type === 'event',
+          ),
           fromBlock: filter.fromBlock,
           toBlock: filter.toBlock,
         })
@@ -67,4 +70,4 @@ export function useContractEvents(contractName: string, filter: EventFilter) {
     error,
     subscribeToEvents,
   }
-} 
+}

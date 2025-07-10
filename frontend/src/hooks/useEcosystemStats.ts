@@ -35,11 +35,12 @@ export function useEcosystemStats() {
       setStats((prev) => ({ ...prev, isLoading: true, error: null }))
 
       // Buscar estatísticas paralelas
-      const [trustChainStats, tradeConnectStats, govGameStats] = await Promise.allSettled([
-        fetchTrustChainStats(),
-        fetchTradeConnectStats(),
-        fetchGovGameStats(),
-      ])
+      const [trustChainStats, tradeConnectStats, govGameStats] =
+        await Promise.allSettled([
+          fetchTrustChainStats(),
+          fetchTradeConnectStats(),
+          fetchGovGameStats(),
+        ])
 
       // Combinar resultados
       let activeUsers = 0
@@ -75,7 +76,6 @@ export function useEcosystemStats() {
         isLoading: false,
         error: null,
       })
-
     } catch (error: any) {
       console.error('Erro ao buscar estatísticas:', error)
       setStats((prev) => ({
@@ -101,11 +101,11 @@ export function useEcosystemStats() {
           name: 'ProfileCreated',
           inputs: [
             { name: 'user', type: 'address', indexed: true },
-            { name: 'username', type: 'string', indexed: false }
-          ]
+            { name: 'username', type: 'string', indexed: false },
+          ],
         },
         fromBlock: 'earliest',
-        toBlock: 'latest'
+        toBlock: 'latest',
       })
 
       // Buscar eventos ScoreUpdated para estimar conexões
@@ -116,16 +116,16 @@ export function useEcosystemStats() {
           name: 'ScoreUpdated',
           inputs: [
             { name: 'user', type: 'address', indexed: true },
-            { name: 'newScore', type: 'uint256', indexed: false }
-          ]
+            { name: 'newScore', type: 'uint256', indexed: false },
+          ],
         },
         fromBlock: 'earliest',
-        toBlock: 'latest'
+        toBlock: 'latest',
       })
 
       return {
         users: profileCreatedLogs.length,
-        connections: scoreUpdatedLogs.length * 2 // Estimativa: cada atualização representa ~2 conexões
+        connections: scoreUpdatedLogs.length * 2, // Estimativa: cada atualização representa ~2 conexões
       }
     } catch (error) {
       console.error('Erro ao buscar stats do TrustChain:', error)
@@ -152,11 +152,11 @@ export function useEcosystemStats() {
             { name: 'tokenOffered', type: 'address', indexed: false },
             { name: 'tokenWanted', type: 'address', indexed: false },
             { name: 'amountOffered', type: 'uint256', indexed: false },
-            { name: 'amountWanted', type: 'uint256', indexed: false }
-          ]
+            { name: 'amountWanted', type: 'uint256', indexed: false },
+          ],
         },
         fromBlock: 'earliest',
-        toBlock: 'latest'
+        toBlock: 'latest',
       })
 
       // Calcular volume total (soma dos amountOffered)
@@ -168,13 +168,14 @@ export function useEcosystemStats() {
       }
 
       // Estimar taxa de sucesso (assumindo 85-95% baseado na atividade)
-      const estimatedSuccessRate = tradeCreatedLogs.length > 0 
-        ? Math.min(85 + (tradeCreatedLogs.length * 0.1), 95)
-        : 0
+      const estimatedSuccessRate =
+        tradeCreatedLogs.length > 0
+          ? Math.min(85 + tradeCreatedLogs.length * 0.1, 95)
+          : 0
 
       return {
         volume: totalVolume,
-        successRate: estimatedSuccessRate
+        successRate: estimatedSuccessRate,
       }
     } catch (error) {
       console.error('Erro ao buscar stats do TradeConnect:', error)
@@ -199,18 +200,18 @@ export function useEcosystemStats() {
             { name: 'proposalId', type: 'uint256', indexed: true },
             { name: 'proposer', type: 'address', indexed: true },
             { name: 'title', type: 'string', indexed: false },
-            { name: 'description', type: 'string', indexed: false }
-          ]
+            { name: 'description', type: 'string', indexed: false },
+          ],
         },
         fromBlock: 'earliest',
-        toBlock: 'latest'
+        toBlock: 'latest',
       })
 
       // Estimar participantes únicos (cada proposta representa ~3 participantes únicos)
       const estimatedParticipants = proposalCreatedLogs.length * 3
 
       return {
-        participants: estimatedParticipants
+        participants: estimatedParticipants,
       }
     } catch (error) {
       console.error('Erro ao buscar stats do GovGame:', error)
@@ -220,7 +221,7 @@ export function useEcosystemStats() {
 
   const formatVolume = (volume: number): string => {
     if (volume === 0) return '$0'
-    
+
     if (volume >= 1000000) {
       return `$${(volume / 1000000).toFixed(1)}M`
     } else if (volume >= 1000) {
@@ -243,6 +244,6 @@ export function useEcosystemStats() {
 
   return {
     ...stats,
-    refetch: fetchStats
+    refetch: fetchStats,
   }
-} 
+}

@@ -4,7 +4,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAccount, useConnect, useDisconnect, useEnsName, useNetwork } from 'wagmi'
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useEnsName,
+  useNetwork,
+} from 'wagmi'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import { useLocale } from '@/contexts/LocaleContext'
@@ -16,7 +22,7 @@ export function WalletConnect() {
   const { toast } = useToast()
   const { setWalletConnected, setAddress } = useAppStore()
   const [mounted, setMounted] = useState(false)
-  
+
   const { address, isConnecting } = useAccount({
     onConnect({ address }) {
       setWalletConnected(true)
@@ -36,12 +42,13 @@ export function WalletConnect() {
 
   // Desabilitar ENS na Metis Sepolia (chain ID 59902) pois não suporta
   const shouldUseEns = chain?.id !== 59902
-  const { data: ensName } = useEnsName({ 
+  const { data: ensName } = useEnsName({
     address,
-    enabled: shouldUseEns && !!address
+    enabled: shouldUseEns && !!address,
   })
-  
-  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
+
+  const { connect, connectors, error, isLoading, pendingConnector } =
+    useConnect()
   const { disconnect } = useDisconnect()
 
   useEffect(() => {
@@ -92,4 +99,4 @@ export function WalletConnect() {
       ))}
     </div>
   )
-} 
+}

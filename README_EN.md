@@ -23,6 +23,8 @@ SocialFI Ecosystem is a decentralized social finance platform that combines soci
 - ✅ **95%+ Test Coverage** - Comprehensive testing suite
 - ✅ **Real-Time Updates** - Live data refresh every 30 seconds
 - ✅ **Production Ready** - Fully functional DeFi ecosystem
+- 🚀 **LIVE ON TESTNET** - https://frontend-nbayoxu23-jistrianes-projects.vercel.app
+- 🔧 **BACKEND ACTIVE** - https://socialfi-backend.netlify.app
 
 ### Key Features
 - Governance System (GovGame)
@@ -112,6 +114,38 @@ npm run coverage
 ```
 
 ### Deployment
+
+#### **🚀 LIVE TESTNET DEPLOYMENT**
+**Frontend URL**: https://frontend-nbayoxu23-jistrianes-projects.vercel.app  
+**Backend URL**: https://socialfi-backend.netlify.app  
+**Health Check**: https://socialfi-backend.netlify.app/health  
+**Status**: ✅ ACTIVE - Complete system running (Frontend + Backend + Contracts)  
+**Networks**: Ethereum Sepolia + Metis Sepolia with native multi-chain support
+
+#### **Deployment Architecture**
+- **Frontend**: Vercel (Static Site Generation)
+- **Backend**: Netlify Functions (Serverless)
+- **Contracts**: Multi-chain (Ethereum + Metis Sepolia)
+- **Communication**: CORS configured between frontend and backend
+- **APIs**: RESTful endpoints for authentication and blockchain data
+
+#### **Contract Addresses**
+
+**Ethereum Sepolia (Chain ID: 11155111)**:
+- RewardsToken: `0x55c8231d1c0b93d763bc01Fa4f5f9fa1424eaaF8`
+- TrustChain: `0x95D41cc1dD95d0C40e401987f4Bc0a7BB2343184`
+- TradeConnect: `0x564a7a43A779d0Ebc9a0E9e9A1B8ed1583338706`
+- GovGame: `0x7123c8538953Ab1F3Fe9ea83722f6e7133DDF9f8`
+- EcosystemHub: `0x8204C13B075e7E90C23C7117bAF31065CE02783b`
+
+**Metis Sepolia (Chain ID: 59902)**:
+- RewardsToken: `0x2a1df9d5b7D277a614607b4d8C82f3d085638751`
+- TrustChain: `0xA6207a47E5D57f905A36756A4681607F12E66239`
+- TradeConnect: `0xD0F5BAD2919ccC87583F7AeCb8ea0C12f141AFdf`
+- GovGame: `0xf88d37494887b4AB0e1221b73A8056DB61538e85`
+- EcosystemHub: `0x86A6FA81b7bA20E9B430613F820583a8473471aB`
+
+#### **Manual Deployment**
 
 1. Deploy to Sepolia testnet:
 ```bash

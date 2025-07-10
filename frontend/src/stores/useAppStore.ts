@@ -57,45 +57,48 @@ interface AppState {
   theme: Theme
   isWalletConnected: boolean
   address: string | null
-  
+
   // Profile data
   profiles: Record<string, Profile>
   reputations: Record<string, number>
   verificationStatus: Record<string, boolean>
-  
+
   // GovGame data
   proposals: Proposal[]
   votes: Record<string, any[]>
-  
+
   // TradeConnect data
   trades: Trade[]
-  
+
   // EcosystemHub data
   rewards: Reward[]
   levels: Record<string, number>
   achievements: Achievement[]
-  
+
   // Basic setters
   setLanguage: (language: Language) => void
   setTheme: (theme: Theme) => void
   setWalletConnected: (isConnected: boolean) => void
   setAddress: (address: string | null) => void
-  
+
   // Profile methods
   updateReputation: (address: string, reputation: number) => void
   updateProfile: (address: string, profile: Profile) => void
   updateVerificationStatus: (address: string, isVerified: boolean) => void
-  
+
   // GovGame methods
   addProposal: (proposal: Proposal) => void
   updateProposal: (proposalId: string, proposal: Partial<Proposal>) => void
   addVote: (proposalId: string, vote: any) => void
-  updateProposalStatus: (proposalId: string, status: 'active' | 'executed' | 'cancelled') => void
-  
+  updateProposalStatus: (
+    proposalId: string,
+    status: 'active' | 'executed' | 'cancelled',
+  ) => void
+
   // TradeConnect methods
   addTrade: (trade: Trade) => void
   updateTrade: (tradeId: string, trade: Partial<Trade>) => void
-  
+
   // EcosystemHub methods
   addReward: (reward: Reward) => void
   updateLevel: (address: string, level: number) => void
@@ -110,7 +113,7 @@ export const useAppStore = create<AppState>()(
       theme: 'system',
       isWalletConnected: false,
       address: null,
-      
+
       // Data collections
       profiles: {},
       reputations: {},
@@ -121,87 +124,91 @@ export const useAppStore = create<AppState>()(
       rewards: [],
       levels: {},
       achievements: [],
-      
+
       // Basic setters
       setLanguage: (language) => {
         console.log('AppStore setLanguage called with:', language)
         set({ language })
       },
       setTheme: (theme) => set({ theme }),
-      setWalletConnected: (isConnected) => set({ isWalletConnected: isConnected }),
+      setWalletConnected: (isConnected) =>
+        set({ isWalletConnected: isConnected }),
       setAddress: (address) => set({ address }),
-      
+
       // Profile methods
       updateReputation: (address, reputation) =>
         set((state) => ({
-          reputations: { ...state.reputations, [address]: reputation }
+          reputations: { ...state.reputations, [address]: reputation },
         })),
-      
+
       updateProfile: (address, profile) =>
         set((state) => ({
-          profiles: { ...state.profiles, [address]: profile }
+          profiles: { ...state.profiles, [address]: profile },
         })),
-      
+
       updateVerificationStatus: (address, isVerified) =>
         set((state) => ({
-          verificationStatus: { ...state.verificationStatus, [address]: isVerified }
+          verificationStatus: {
+            ...state.verificationStatus,
+            [address]: isVerified,
+          },
         })),
-      
+
       // GovGame methods
       addProposal: (proposal) =>
         set((state) => ({
-          proposals: [...state.proposals, proposal]
+          proposals: [...state.proposals, proposal],
         })),
-      
+
       updateProposal: (proposalId, proposalUpdate) =>
         set((state) => ({
-          proposals: state.proposals.map(p =>
-            p.id === proposalId ? { ...p, ...proposalUpdate } : p
-          )
+          proposals: state.proposals.map((p) =>
+            p.id === proposalId ? { ...p, ...proposalUpdate } : p,
+          ),
         })),
-      
+
       addVote: (proposalId, vote) =>
         set((state) => ({
           votes: {
             ...state.votes,
-            [proposalId]: [...(state.votes[proposalId] || []), vote]
-          }
+            [proposalId]: [...(state.votes[proposalId] || []), vote],
+          },
         })),
-      
+
       updateProposalStatus: (proposalId, status) =>
         set((state) => ({
-          proposals: state.proposals.map(p =>
-            p.id === proposalId ? { ...p, status } : p
-          )
+          proposals: state.proposals.map((p) =>
+            p.id === proposalId ? { ...p, status } : p,
+          ),
         })),
-      
+
       // TradeConnect methods
       addTrade: (trade) =>
         set((state) => ({
-          trades: [...state.trades, trade]
+          trades: [...state.trades, trade],
         })),
-      
+
       updateTrade: (tradeId, tradeUpdate) =>
         set((state) => ({
-          trades: state.trades.map(t =>
-            t.id === tradeId ? { ...t, ...tradeUpdate } : t
-          )
+          trades: state.trades.map((t) =>
+            t.id === tradeId ? { ...t, ...tradeUpdate } : t,
+          ),
         })),
-      
+
       // EcosystemHub methods
       addReward: (reward) =>
         set((state) => ({
-          rewards: [...state.rewards, reward]
+          rewards: [...state.rewards, reward],
         })),
-      
+
       updateLevel: (address, level) =>
         set((state) => ({
-          levels: { ...state.levels, [address]: level }
+          levels: { ...state.levels, [address]: level },
         })),
-      
+
       addAchievement: (achievement) =>
         set((state) => ({
-          achievements: [...state.achievements, achievement]
+          achievements: [...state.achievements, achievement],
         })),
     }),
     {
@@ -214,6 +221,6 @@ export const useAppStore = create<AppState>()(
         reputations: state.reputations,
         verificationStatus: state.verificationStatus,
       }),
-    }
-  )
-) 
+    },
+  ),
+)

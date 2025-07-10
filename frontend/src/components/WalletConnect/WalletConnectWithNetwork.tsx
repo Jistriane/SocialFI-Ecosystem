@@ -6,33 +6,44 @@
 import { useState, useEffect } from 'react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useChainId } from 'wagmi'
-import NetworkSelector, { AVAILABLE_NETWORKS } from '../NetworkSelector'
+import { NetworkSelector } from '../NetworkSelector'
 import { WalletConnect } from './index'
 import { useLocale } from '@/contexts/LocaleContext'
+import {
+  getAllSupportedNetworks,
+  getNetworkName,
+  isSupportedNetwork,
+  hasContractsDeployed,
+} from '@/config/contracts'
 
 interface NetworkConfig {
-  id: number
+  chainId: number
   name: string
-  symbol: string
-  rpcUrl: string
-  explorerUrl: string
+  nativeCurrency: { symbol: string }
   hasContracts: boolean
-  contractsInfo?: string
+  explorerUrl: string
+  rpcUrl: string
+  faucetUrl: string
 }
 
 export function WalletConnectWithNetwork() {
   const { t } = useLocale()
-  const [selectedNetwork, setSelectedNetwork] = useState<NetworkConfig | null>(null)
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkConfig | null>(
+    null,
+  )
   const [showNetworkSelector, setShowNetworkSelector] = useState(true)
   const chainId = useChainId()
 
-  // Define rede padrão (Ethereum Sepolia - tem contratos)
+  // Obter redes suportadas
+  const supportedNetworks = getAllSupportedNetworks()
+
+  // Define rede padrão (primeira rede com contratos)
   useEffect(() => {
-    const defaultNetwork = AVAILABLE_NETWORKS.find((n) => n.hasContracts)
+    const defaultNetwork = supportedNetworks.find((n) => n.hasContracts)
     if (defaultNetwork && !selectedNetwork) {
       setSelectedNetwork(defaultNetwork)
     }
-  }, [selectedNetwork])
+  }, [selectedNetwork, supportedNetworks])
 
   // Verifica se a carteira já está conectada
   useEffect(() => {
@@ -41,20 +52,9 @@ export function WalletConnectWithNetwork() {
     }
   }, [chainId])
 
-  const handleNetworkSelect = (network: NetworkConfig) => {
-    setSelectedNetwork(network)
-  }
-
-  const handleConnect = () => {
-    if (!selectedNetwork) return
-    
-    // Simplesmente esconde o seletor - o usuário pode trocar rede manualmente na carteira
-    setShowNetworkSelector(false)
-  }
-
   const handleDisconnect = () => {
     setShowNetworkSelector(true)
-    setSelectedNetwork(AVAILABLE_NETWORKS.find((n) => n.hasContracts) || null)
+    setSelectedNetwork(supportedNetworks.find((n) => n.hasContracts) || null)
   }
 
   // Se a carteira está conectada, mostra o componente normal
@@ -70,21 +70,24 @@ export function WalletConnectWithNetwork() {
             Trocar rede
           </button>
         </div>
-        
+
         {/* Aviso sobre rede atual */}
         {chainId && (
           <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs">
-            {chainId === 11155111 ? (
+            {isSupportedNetwork(chainId) && hasContractsDeployed(chainId) ? (
               <div className="text-green-700">
-                ✅ <strong>Ethereum Sepolia</strong> - Todos os contratos disponíveis
+                ✅ <strong>{getNetworkName(chainId)}</strong> - Todos os
+                contratos disponíveis
               </div>
-            ) : chainId === 59902 ? (
-              <div className="text-green-700">
-                ✅ <strong>Metis Sepolia</strong> - Todos os contratos disponíveis
+            ) : isSupportedNetwork(chainId) ? (
+              <div className="text-yellow-700">
+                ⚠️ <strong>{getNetworkName(chainId)}</strong> - Contratos não
+                deployados
               </div>
             ) : (
               <div className="text-red-700">
-                ❌ <strong>Rede não suportada</strong> - Troque para Ethereum Sepolia ou Metis Sepolia
+                ❌ <strong>Rede não suportada</strong> - Troque para uma rede
+                suportada
               </div>
             )}
           </div>
@@ -96,13 +99,8 @@ export function WalletConnectWithNetwork() {
   // Se não está conectada, mostra o seletor de rede
   return (
     <div className="flex flex-col items-center gap-6">
-      <NetworkSelector
-        selectedNetwork={selectedNetwork}
-        onNetworkSelect={handleNetworkSelect}
-        onConnect={handleConnect}
-        isConnecting={false}
-      />
-      
+      <NetworkSelector className="w-full max-w-md" />
+
       {selectedNetwork && (
         <div className="w-full max-w-md">
           <ConnectButton.Custom>
@@ -111,7 +109,7 @@ export function WalletConnectWithNetwork() {
                 setShowNetworkSelector(false)
                 return null
               }
-              
+
               return (
                 <button
                   onClick={openConnectModal}
@@ -124,16 +122,18 @@ export function WalletConnectWithNetwork() {
           </ConnectButton.Custom>
         </div>
       )}
-      
+
       {selectedNetwork && !selectedNetwork.hasContracts && (
         <div className="max-w-md p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
           <div className="font-medium mb-2">⚠️ Aviso sobre a rede selecionada</div>
           <p>
-            A rede <strong>{selectedNetwork.name}</strong> ainda não possui contratos deployados. 
-            Você pode conectar sua carteira, mas as funcionalidades do sistema estarão limitadas.
+            A rede <strong>{selectedNetwork.name}</strong> ainda não possui
+            contratos deployados. Você pode conectar sua carteira, mas as
+            funcionalidades do sistema estarão limitadas.
           </p>
           <p className="mt-2 text-xs">
-            Recomendamos usar <strong>Ethereum Sepolia</strong> para ter acesso completo ao ecossistema.
+            Recomendamos usar uma rede com contratos deployados para ter acesso
+            completo ao ecossistema.
           </p>
         </div>
       )}
@@ -141,4 +141,4 @@ export function WalletConnectWithNetwork() {
   )
 }
 
-export default WalletConnectWithNetwork 
+export default WalletConnectWithNetwork

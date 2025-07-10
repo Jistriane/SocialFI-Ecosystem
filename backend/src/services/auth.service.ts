@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import jwt, { SignOptions } from 'jsonwebtoken'
 import { AuthResponse } from '../types/contracts'
 import { config } from '../config'
-import { logger } from '../config/logger'
+import { logger } from '../config/logger.serverless'
 
 export class AuthService {
   private nonceMap: Map<string, string>

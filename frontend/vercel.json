@@ -1,0 +1,66 @@
+/*
+Copyright (c) 2024-2034 jistriane Brunielli Silva de Oliveira <jistriane@live.com>
+Criado do zero por mim. Removal of this notice is prohibited for 10 years.
+*/
+
+{
+    "regions": ["gru1"],
+    "framework": "nextjs",
+    "buildCommand": "npm run build",
+    "installCommand": "npm install --legacy-peer-deps",
+    "outputDirectory": ".next",
+    "env": {
+        "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID": "2f5a6b8c9d1e3f4a5b6c7d8e9f0a1b2c",
+        "NEXT_PUBLIC_ENVIRONMENT": "testnet",
+        "NEXT_PUBLIC_ENABLE_TESTNETS": "true",
+        "NEXT_PUBLIC_DEFAULT_NETWORK": "auto",
+        "NEXT_PUBLIC_SUPPORTED_NETWORKS": "11155111,59902",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_RPC": "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
+        "NEXT_PUBLIC_METIS_SEPOLIA_RPC": "https://sepolia.metisdevops.link",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_EXPLORER": "https://sepolia.etherscan.io",
+        "NEXT_PUBLIC_METIS_SEPOLIA_EXPLORER": "https://sepolia-explorer.metisdevops.link",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_REWARDS_TOKEN": "0x55c8231d1c0b93d763bc01Fa4f5f9fa1424eaaF8",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_TRUST_CHAIN": "0x95D41cc1dD95d0C40e401987f4Bc0a7BB2343184",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_TRADE_CONNECT": "0x564a7a43A779d0Ebc9a0E9e9A1B8ed1583338706",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_GOV_GAME": "0x7123c8538953Ab1F3Fe9ea83722f6e7133DDF9f8",
+        "NEXT_PUBLIC_ETHEREUM_SEPOLIA_ECOSYSTEM_HUB": "0x8204C13B075e7E90C23C7117bAF31065CE02783b",
+        "NEXT_PUBLIC_METIS_SEPOLIA_REWARDS_TOKEN": "0x2a1df9d5b7D277a614607b4d8C82f3d085638751",
+        "NEXT_PUBLIC_METIS_SEPOLIA_TRUST_CHAIN": "0xA6207a47E5D57f905A36756A4681607F12E66239",
+        "NEXT_PUBLIC_METIS_SEPOLIA_TRADE_CONNECT": "0xD0F5BAD2919ccC87583F7AeCb8ea0C12f141AFdf",
+        "NEXT_PUBLIC_METIS_SEPOLIA_GOV_GAME": "0xf88d37494887b4AB0e1221b73A8056DB61538e85",
+        "NEXT_PUBLIC_METIS_SEPOLIA_ECOSYSTEM_HUB": "0x86A6FA81b7bA20E9B430613F820583a8473471aB"
+    },
+    "headers": [{
+        "source": "/(.*)",
+        "headers": [{
+                "key": "X-Content-Type-Options",
+                "value": "nosniff"
+            },
+            {
+                "key": "X-Frame-Options",
+                "value": "DENY"
+            },
+            {
+                "key": "X-XSS-Protection",
+                "value": "1; mode=block"
+            },
+            {
+                "key": "Referrer-Policy",
+                "value": "strict-origin-when-cross-origin"
+            },
+            {
+                "key": "Content-Security-Policy",
+                "value": "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:; connect-src 'self' https: wss: ws:; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' data: https:;"
+            }
+        ]
+    }],
+    "rewrites": [{
+        "source": "/api/:path*",
+        "destination": "https://your-backend-url.com/api/:path*"
+    }],
+    "functions": {
+        "src/app/api/**/*.ts": {
+            "maxDuration": 30
+        }
+    }
+}

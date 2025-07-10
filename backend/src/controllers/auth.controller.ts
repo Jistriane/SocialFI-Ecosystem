@@ -4,7 +4,7 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
 import { AuthRequest } from '../types/contracts';
-import { logger } from '../config/logger';
+import { logger } from '../config/logger.serverless';
 
 interface AuthenticatedRequest extends Request {
   user?: {

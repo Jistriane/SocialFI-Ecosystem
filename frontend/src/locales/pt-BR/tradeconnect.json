@@ -4,78 +4,78 @@ Criado do zero por mim. Removal of this notice is prohibited for 10 years.
 */
 
 {
-    "dashboard": {
-        "title": "Painel de Trading",
-        "performance": "Desempenho",
-        "portfolio": "Portfólio",
-        "active_trades": "Trades Ativos",
-        "trade_history": "Histórico de Trades"
+  "dashboard": {
+    "title": "Painel de Trading",
+    "performance": "Desempenho",
+    "portfolio": "Portfólio",
+    "active_trades": "Trades Ativos",
+    "trade_history": "Histórico de Trades"
+  },
+  "trading": {
+    "open_position": "Abrir Posição",
+    "close_position": "Fechar Posição",
+    "amount": "Quantidade",
+    "leverage": "Alavancagem",
+    "entry_price": "Preço de Entrada",
+    "current_price": "Preço Atual",
+    "take_profit": "Take Profit",
+    "stop_loss": "Stop Loss"
+  },
+  "copy_trading": {
+    "title": "Copy Trading",
+    "available_traders": "Traders Disponíveis",
+    "my_copies": "Minhas Cópias",
+    "start_copying": "Começar a Copiar",
+    "stop_copying": "Parar de Copiar",
+    "copy_amount": "Quantidade para Copiar"
+  },
+  "stats": {
+    "win_rate": "Taxa de Acerto",
+    "total_profit": "Lucro Total",
+    "total_trades": "Total de Trades",
+    "average_profit": "Lucro Médio",
+    "best_trade": "Melhor Trade",
+    "worst_trade": "Pior Trade",
+    "active_trades": "Negociações Ativas",
+    "completed": "Concluídas",
+    "pending": "Pendentes",
+    "success_rate": "Taxa de Sucesso"
+  },
+  "notifications": {
+    "position_opened": "Posição aberta com sucesso",
+    "position_closed": "Posição fechada com sucesso",
+    "copy_started": "Copy trading iniciado",
+    "copy_stopped": "Copy trading interrompido",
+    "take_profit_hit": "Take profit atingido",
+    "stop_loss_hit": "Stop loss atingido"
+  },
+  "title": "TradeConnect",
+  "description": "Plataforma de negociação P2P baseada em confiança",
+  "subtitle": "Negocie com segurança usando o sistema de confiança TrustChain",
+  "actions": {
+    "create_trade": "Criar Negociação",
+    "search_offers": "Buscar Ofertas"
+  },
+  "sections": {
+    "recent_trades": "Negociações Recentes",
+    "how_it_works": "Como Funciona"
+  },
+  "empty_states": {
+    "no_trades": "Nenhuma negociação encontrada",
+    "no_trades_desc": "Crie sua primeira negociação para começar"
+  },
+  "how_it_works": {
+    "step1": {
+      "title": "Crie uma Oferta",
+      "description": "Defina o que você quer negociar e suas condições"
     },
-    "trading": {
-        "open_position": "Abrir Posição",
-        "close_position": "Fechar Posição",
-        "amount": "Quantidade",
-        "leverage": "Alavancagem",
-        "entry_price": "Preço de Entrada",
-        "current_price": "Preço Atual",
-        "take_profit": "Take Profit",
-        "stop_loss": "Stop Loss"
+    "step2": {
+      "title": "Encontre Parceiros",
+      "description": "Use o TrustChain para encontrar usuários confiáveis"
     },
-    "copy_trading": {
-        "title": "Copy Trading",
-        "available_traders": "Traders Disponíveis",
-        "my_copies": "Minhas Cópias",
-        "start_copying": "Começar a Copiar",
-        "stop_copying": "Parar de Copiar",
-        "copy_amount": "Quantidade para Copiar"
-    },
-    "stats": {
-        "win_rate": "Taxa de Acerto",
-        "total_profit": "Lucro Total",
-        "total_trades": "Total de Trades",
-        "average_profit": "Lucro Médio",
-        "best_trade": "Melhor Trade",
-        "worst_trade": "Pior Trade",
-        "active_trades": "Negociações Ativas",
-        "completed": "Concluídas",
-        "pending": "Pendentes",
-        "success_rate": "Taxa de Sucesso"
-    },
-    "notifications": {
-        "position_opened": "Posição aberta com sucesso",
-        "position_closed": "Posição fechada com sucesso",
-        "copy_started": "Copy trading iniciado",
-        "copy_stopped": "Copy trading interrompido",
-        "take_profit_hit": "Take profit atingido",
-        "stop_loss_hit": "Stop loss atingido"
-    },
-    "title": "TradeConnect",
-    "description": "Plataforma de negociação P2P baseada em confiança",
-    "subtitle": "Negocie com segurança usando o sistema de confiança TrustChain",
-    "actions": {
-        "create_trade": "Criar Negociação",
-        "search_offers": "Buscar Ofertas"
-    },
-    "sections": {
-        "recent_trades": "Negociações Recentes",
-        "how_it_works": "Como Funciona"
-    },
-    "empty_states": {
-        "no_trades": "Nenhuma negociação encontrada",
-        "no_trades_desc": "Crie sua primeira negociação para começar"
-    },
-    "how_it_works": {
-        "step1": {
-            "title": "Crie uma Oferta",
-            "description": "Defina o que você quer negociar e suas condições"
-        },
-        "step2": {
-            "title": "Encontre Parceiros",
-            "description": "Use o TrustChain para encontrar usuários confiáveis"
-        },
-        "step3": {
-            "title": "Negocie Seguro",
-            "description": "Execute a transação com garantias do smart contract"
-        }
+    "step3": {
+      "title": "Negocie Seguro",
+      "description": "Execute a transação com garantias do smart contract"
     }
+  }
 }

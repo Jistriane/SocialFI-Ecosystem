@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { logger } from '../config/logger';
+import { logger } from '../config/logger.serverless';
 
 const STORAGE_DIR = path.join(process.cwd(), 'storage');
 

@@ -2,7 +2,7 @@
 // Criado do zero por mim. Removal of this notice is prohibited for 10 years.
 
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../config/logger';
+import { logger } from '../config/logger.serverless';
 
 interface ErrorWithStatus extends Error {
   status?: number;

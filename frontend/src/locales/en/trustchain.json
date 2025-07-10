@@ -4,37 +4,37 @@ Criado do zero por mim. Removal of this notice is prohibited for 10 years.
 */
 
 {
-    "profile": {
-        "title": "Trust Chain Profile",
-        "reputation_score": "Reputation Score",
-        "total_score": "Total Score",
-        "categories": {
-            "trading": "Trading",
-            "governance": "Governance",
-            "community": "Community",
-            "development": "Development"
-        }
-    },
-    "actions": {
-        "update_profile": "Update Profile",
-        "endorse_user": "Endorse User",
-        "revoke_endorsement": "Revoke Endorsement",
-        "report_user": "Report User"
-    },
-    "validation": {
-        "minimum_score": "Minimum score required",
-        "already_endorsed": "You have already endorsed this user",
-        "cannot_self_endorse": "You cannot endorse yourself"
-    },
-    "stats": {
-        "total_endorsements": "Total Endorsements",
-        "endorsements_received": "Endorsements Received",
-        "endorsements_given": "Endorsements Given",
-        "trust_score": "Trust Score"
-    },
-    "notifications": {
-        "endorsement_received": "You received a new endorsement",
-        "endorsement_revoked": "An endorsement was revoked",
-        "profile_updated": "Profile updated successfully"
+  "profile": {
+    "title": "Trust Chain Profile",
+    "reputation_score": "Reputation Score",
+    "total_score": "Total Score",
+    "categories": {
+      "trading": "Trading",
+      "governance": "Governance",
+      "community": "Community",
+      "development": "Development"
     }
+  },
+  "actions": {
+    "update_profile": "Update Profile",
+    "endorse_user": "Endorse User",
+    "revoke_endorsement": "Revoke Endorsement",
+    "report_user": "Report User"
+  },
+  "validation": {
+    "minimum_score": "Minimum score required",
+    "already_endorsed": "You have already endorsed this user",
+    "cannot_self_endorse": "You cannot endorse yourself"
+  },
+  "stats": {
+    "total_endorsements": "Total Endorsements",
+    "endorsements_received": "Endorsements Received",
+    "endorsements_given": "Endorsements Given",
+    "trust_score": "Trust Score"
+  },
+  "notifications": {
+    "endorsement_received": "You received a new endorsement",
+    "endorsement_revoked": "An endorsement was revoked",
+    "profile_updated": "Profile updated successfully"
+  }
 }

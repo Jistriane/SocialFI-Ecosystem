@@ -4,83 +4,83 @@ Criado do zero por mim. Removal of this notice is prohibited for 10 years.
 */
 
 {
-    "dashboard": {
-        "title": "Gamified Governance",
-        "my_score": "My Score",
-        "rank": "Rank",
-        "active_proposals": "Active Proposals",
-        "my_proposals": "My Proposals"
+  "dashboard": {
+    "title": "Gamified Governance",
+    "my_score": "My Score",
+    "rank": "Rank",
+    "active_proposals": "Active Proposals",
+    "my_proposals": "My Proposals"
+  },
+  "proposals": {
+    "create_proposal": "Create Proposal",
+    "vote_proposal": "Vote on Proposal",
+    "title": "Title",
+    "description": "Description",
+    "voting_period": "Voting Period",
+    "execution_delay": "Execution Delay",
+    "minimum_votes": "Minimum Votes",
+    "quorum": "Quorum"
+  },
+  "voting": {
+    "vote_for": "Vote For",
+    "vote_against": "Vote Against",
+    "abstain": "Abstain",
+    "voting_power": "Voting Power",
+    "votes_needed": "Votes Needed",
+    "time_remaining": "Time Remaining"
+  },
+  "rewards": {
+    "proposal_reward": "Proposal Reward",
+    "voting_reward": "Voting Reward",
+    "participation_bonus": "Participation Bonus",
+    "claim_rewards": "Claim Rewards",
+    "available_rewards": "Available Rewards"
+  },
+  "notifications": {
+    "proposal_created": "Proposal created successfully",
+    "vote_registered": "Vote registered successfully",
+    "proposal_executed": "Proposal executed successfully",
+    "rewards_claimed": "Rewards claimed successfully",
+    "quorum_reached": "Quorum reached",
+    "proposal_approved": "Proposal approved",
+    "proposal_rejected": "Proposal rejected"
+  },
+  "title": "GovGame",
+  "description": "Gamified governance system for community decisions",
+  "subtitle": "Participate in ecosystem governance and earn rewards for your contribution",
+  "actions": {
+    "new_proposal": "New Proposal",
+    "view_active_proposals": "View Active Proposals"
+  },
+  "stats": {
+    "votes_given": "Votes Given",
+    "rewards": "Rewards",
+    "proposals_created": "Proposals Created",
+    "participation": "Participation"
+  },
+  "sections": {
+    "active_proposals": "Active Proposals",
+    "leaderboard": "Participation Leaderboard",
+    "how_it_works": "How It Works"
+  },
+  "empty_states": {
+    "no_proposals": "No active proposals at the moment",
+    "no_proposals_desc": "Be the first to create a proposal for the community",
+    "leaderboard_empty": "Leaderboard coming soon",
+    "leaderboard_empty_desc": "Participate in governance to appear on the leaderboard"
+  },
+  "how_it_works": {
+    "step1": {
+      "title": "Create Proposals",
+      "description": "Suggest improvements or changes to the ecosystem"
     },
-    "proposals": {
-        "create_proposal": "Create Proposal",
-        "vote_proposal": "Vote on Proposal",
-        "title": "Title",
-        "description": "Description",
-        "voting_period": "Voting Period",
-        "execution_delay": "Execution Delay",
-        "minimum_votes": "Minimum Votes",
-        "quorum": "Quorum"
+    "step2": {
+      "title": "Vote on Proposals",
+      "description": "Participate in decisions by voting on community proposals"
     },
-    "voting": {
-        "vote_for": "Vote For",
-        "vote_against": "Vote Against",
-        "abstain": "Abstain",
-        "voting_power": "Voting Power",
-        "votes_needed": "Votes Needed",
-        "time_remaining": "Time Remaining"
-    },
-    "rewards": {
-        "proposal_reward": "Proposal Reward",
-        "voting_reward": "Voting Reward",
-        "participation_bonus": "Participation Bonus",
-        "claim_rewards": "Claim Rewards",
-        "available_rewards": "Available Rewards"
-    },
-    "notifications": {
-        "proposal_created": "Proposal created successfully",
-        "vote_registered": "Vote registered successfully",
-        "proposal_executed": "Proposal executed successfully",
-        "rewards_claimed": "Rewards claimed successfully",
-        "quorum_reached": "Quorum reached",
-        "proposal_approved": "Proposal approved",
-        "proposal_rejected": "Proposal rejected"
-    },
-    "title": "GovGame",
-    "description": "Gamified governance system for community decisions",
-    "subtitle": "Participate in ecosystem governance and earn rewards for your contribution",
-    "actions": {
-        "new_proposal": "New Proposal",
-        "view_active_proposals": "View Active Proposals"
-    },
-    "stats": {
-        "votes_given": "Votes Given",
-        "rewards": "Rewards",
-        "proposals_created": "Proposals Created",
-        "participation": "Participation"
-    },
-    "sections": {
-        "active_proposals": "Active Proposals",
-        "leaderboard": "Participation Leaderboard",
-        "how_it_works": "How It Works"
-    },
-    "empty_states": {
-        "no_proposals": "No active proposals at the moment",
-        "no_proposals_desc": "Be the first to create a proposal for the community",
-        "leaderboard_empty": "Leaderboard coming soon",
-        "leaderboard_empty_desc": "Participate in governance to appear on the leaderboard"
-    },
-    "how_it_works": {
-        "step1": {
-            "title": "Create Proposals",
-            "description": "Suggest improvements or changes to the ecosystem"
-        },
-        "step2": {
-            "title": "Vote on Proposals",
-            "description": "Participate in decisions by voting on community proposals"
-        },
-        "step3": {
-            "title": "Earn Rewards",
-            "description": "Receive tokens for your active participation in governance"
-        }
+    "step3": {
+      "title": "Earn Rewards",
+      "description": "Receive tokens for your active participation in governance"
     }
+  }
 }

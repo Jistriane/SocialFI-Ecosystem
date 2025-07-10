@@ -30,4 +30,4 @@ declare global {
       toHaveDisplayValue(value: string | RegExp | Array<string | RegExp>): R
     }
   }
-} 
+}

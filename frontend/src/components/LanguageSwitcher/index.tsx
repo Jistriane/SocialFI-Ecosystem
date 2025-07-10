@@ -39,7 +39,7 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => handleLanguageChange('pt-BR')}
           className={locale === 'pt-BR' ? 'bg-metis-500/20' : ''}
         >
@@ -48,7 +48,7 @@ export function LanguageSwitcher() {
             {locale === 'pt-BR' && <span className="text-metis-400">✓</span>}
           </span>
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => handleLanguageChange('en')}
           className={locale === 'en' ? 'bg-metis-500/20' : ''}
         >
@@ -60,4 +60,4 @@ export function LanguageSwitcher() {
       </DropdownMenuContent>
     </DropdownMenu>
   )
-} 
+}

@@ -103,13 +103,17 @@ export function WalletConnect() {
               className="flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors"
             >
               <div className="h-5 w-5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
-                {account.address ? account.address.slice(2, 4).toUpperCase() : '??'}
+                {account.address
+                  ? account.address.slice(2, 4).toUpperCase()
+                  : '??'}
               </div>
-              {formatAddress(account.address) || account.displayName || 'Carteira'}
+              {formatAddress(account.address) ||
+                account.displayName ||
+                'Carteira'}
             </button>
           </div>
         )
       }}
     </ConnectButton.Custom>
   )
-} 
+}

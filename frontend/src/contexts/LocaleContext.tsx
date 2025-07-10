@@ -3,7 +3,13 @@
 
 'use client'
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react'
 import { useAppStore } from '@/stores/useAppStore'
 import { useHydration } from '@/hooks/useHydration'
 
@@ -72,31 +78,42 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     loadTranslations()
   }, [currentLocale, isHydrated])
 
-  const handleSetLocale = useCallback((newLocale: Locale) => {
-    console.log('LocaleContext: Changing locale from', currentLocale, 'to', newLocale)
-    setCurrentLocale(newLocale)
-    setLanguage(newLocale)
-    
-    // Forçar re-render
-    setIsReady(false)
-  }, [currentLocale, setLanguage])
+  const handleSetLocale = useCallback(
+    (newLocale: Locale) => {
+      console.log(
+        'LocaleContext: Changing locale from',
+        currentLocale,
+        'to',
+        newLocale,
+      )
+      setCurrentLocale(newLocale)
+      setLanguage(newLocale)
 
-  const t = useCallback((key: string, namespace = 'common') => {
-    if (!isReady) return key
+      // Forçar re-render
+      setIsReady(false)
+    },
+    [currentLocale, setLanguage],
+  )
 
-    const keys = key.split('.')
-    let value = translations[namespace] || {}
+  const t = useCallback(
+    (key: string, namespace = 'common') => {
+      if (!isReady) return key
 
-    for (const k of keys) {
-      value = value[k]
-      if (value === undefined) {
-        console.warn(`Translation missing for key: ${namespace}.${key}`)
-        return key
+      const keys = key.split('.')
+      let value = translations[namespace] || {}
+
+      for (const k of keys) {
+        value = value[k]
+        if (value === undefined) {
+          console.warn(`Translation missing for key: ${namespace}.${key}`)
+          return key
+        }
       }
-    }
 
-    return value || key
-  }, [isReady, translations])
+      return value || key
+    },
+    [isReady, translations],
+  )
 
   return (
     <LocaleContext.Provider
@@ -118,4 +135,4 @@ export function useLocale() {
     throw new Error('useLocale must be used within a LocaleProvider')
   }
   return context
-} 
+}

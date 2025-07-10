@@ -24,7 +24,10 @@ export function useContract(contractName: string) {
     try {
       return getContractConfig(contractName)
     } catch (error) {
-      console.error(`Erro ao obter configuração do contrato ${contractName}:`, error)
+      console.error(
+        `Erro ao obter configuração do contrato ${contractName}:`,
+        error,
+      )
       return null
     }
   }, [contractName])
@@ -52,8 +55,13 @@ export function useContract(contractName: string) {
       }
 
       // Verificar se o contrato está deployado
-      if (!config.address || config.address === '0x0000000000000000000000000000000000000000') {
-        throw new Error(`Contrato ${contractName} não está deployado na rede atual`)
+      if (
+        !config.address ||
+        config.address === '0x0000000000000000000000000000000000000000'
+      ) {
+        throw new Error(
+          `Contrato ${contractName} não está deployado na rede atual`,
+        )
       }
 
       try {
@@ -69,21 +77,31 @@ export function useContract(contractName: string) {
         console.log(`✅ Resultado de ${functionName}:`, result)
         return result
       } catch (error: any) {
-        console.error(`❌ Erro ao ler contrato ${contractName}.${functionName}:`, error.message)
-        
+        console.error(
+          `❌ Erro ao ler contrato ${contractName}.${functionName}:`,
+          error.message,
+        )
+
         // Tratamento específico para diferentes tipos de erro
         if (error.message.includes('ChainDoesNotSupportContract')) {
-          throw new Error('Esta rede não suporta ENS. Use apenas endereços de carteira.')
+          throw new Error(
+            'Esta rede não suporta ENS. Use apenas endereços de carteira.',
+          )
         }
-        
-        if (error.message.includes('returned no data') || error.message.includes('does not exist')) {
-          throw new Error(`O contrato ${contractName} pode não estar deployado ou a função ${functionName} não existe.`)
+
+        if (
+          error.message.includes('returned no data') ||
+          error.message.includes('does not exist')
+        ) {
+          throw new Error(
+            `O contrato ${contractName} pode não estar deployado ou a função ${functionName} não existe.`,
+          )
         }
-        
+
         if (error.message.includes('insufficient funds')) {
           throw new Error('Saldo insuficiente para executar esta transação.')
         }
-        
+
         throw error
       }
     },
@@ -101,8 +119,13 @@ export function useContract(contractName: string) {
       }
 
       // Verificar se o contrato está deployado
-      if (!config.address || config.address === '0x0000000000000000000000000000000000000000') {
-        throw new Error(`Contrato ${contractName} não está deployado na rede atual`)
+      if (
+        !config.address ||
+        config.address === '0x0000000000000000000000000000000000000000'
+      ) {
+        throw new Error(
+          `Contrato ${contractName} não está deployado na rede atual`,
+        )
       }
 
       try {
@@ -118,7 +141,10 @@ export function useContract(contractName: string) {
         console.log(`✅ Transação enviada:`, result)
         return result
       } catch (error: any) {
-        console.error(`❌ Erro ao escrever contrato ${contractName}.${functionName}:`, error.message)
+        console.error(
+          `❌ Erro ao escrever contrato ${contractName}.${functionName}:`,
+          error.message,
+        )
         throw error
       }
     },
@@ -200,8 +226,16 @@ export function useGovGame() {
     [writeContract],
   )
 
+  const vote = useCallback(
+    async (proposalId: number, support: boolean) => {
+      return writeContract('vote', [proposalId, support])
+    },
+    [writeContract],
+  )
+
   return {
     getProposals,
     createProposal,
+    vote,
   }
 }

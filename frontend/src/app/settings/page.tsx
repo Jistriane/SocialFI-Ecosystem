@@ -21,7 +21,9 @@ export default function SettingsPage() {
               <Settings className="w-8 h-8 text-gray-600" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold">{t('settings.title', 'common')}</h1>
+          <h1 className="text-3xl font-bold">
+            {t('settings.title', 'common')}
+          </h1>
           <p className="text-muted-foreground">
             {t('settings.description', 'common')}
           </p>
@@ -33,20 +35,30 @@ export default function SettingsPage() {
           <section className="border rounded-lg p-6">
             <div className="flex items-center gap-3 mb-4">
               <Globe className="w-5 h-5 text-blue-600" />
-              <h2 className="text-xl font-semibold">{t('settings.sections.general', 'common')}</h2>
+              <h2 className="text-xl font-semibold">
+                {t('settings.sections.general', 'common')}
+              </h2>
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{t('settings.general.language', 'common')}</p>
-                  <p className="text-sm text-muted-foreground">{t('settings.general.language_desc', 'common')}</p>
+                  <p className="font-medium">
+                    {t('settings.general.language', 'common')}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('settings.general.language_desc', 'common')}
+                  </p>
                 </div>
                 <LanguageSwitcher />
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{t('settings.general.theme', 'common')}</p>
-                  <p className="text-sm text-muted-foreground">{t('settings.general.theme_desc', 'common')}</p>
+                  <p className="font-medium">
+                    {t('settings.general.theme', 'common')}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('settings.general.theme_desc', 'common')}
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   <Moon className="w-4 h-4 mr-2" />
@@ -60,13 +72,25 @@ export default function SettingsPage() {
           <section className="border rounded-lg p-6">
             <div className="flex items-center gap-3 mb-4">
               <Bell className="w-5 h-5 text-yellow-600" />
-              <h2 className="text-xl font-semibold">{t('settings.sections.notifications', 'common')}</h2>
+              <h2 className="text-xl font-semibold">
+                {t('settings.sections.notifications', 'common')}
+              </h2>
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{t('settings.notifications.transaction_notifications', 'common')}</p>
-                  <p className="text-sm text-muted-foreground">{t('settings.notifications.transaction_notifications_desc', 'common')}</p>
+                  <p className="font-medium">
+                    {t(
+                      'settings.notifications.transaction_notifications',
+                      'common',
+                    )}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      'settings.notifications.transaction_notifications_desc',
+                      'common',
+                    )}
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   {t('settings.notifications.enabled', 'common')}
@@ -74,8 +98,18 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{t('settings.notifications.governance_notifications', 'common')}</p>
-                  <p className="text-sm text-muted-foreground">{t('settings.notifications.governance_notifications_desc', 'common')}</p>
+                  <p className="font-medium">
+                    {t(
+                      'settings.notifications.governance_notifications',
+                      'common',
+                    )}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t(
+                      'settings.notifications.governance_notifications_desc',
+                      'common',
+                    )}
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   {t('settings.notifications.enabled', 'common')}
@@ -88,13 +122,19 @@ export default function SettingsPage() {
           <section className="border rounded-lg p-6">
             <div className="flex items-center gap-3 mb-4">
               <Shield className="w-5 h-5 text-red-600" />
-              <h2 className="text-xl font-semibold">{t('settings.sections.security', 'common')}</h2>
+              <h2 className="text-xl font-semibold">
+                {t('settings.sections.security', 'common')}
+              </h2>
             </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{t('settings.security.two_factor', 'common')}</p>
-                  <p className="text-sm text-muted-foreground">{t('settings.security.two_factor_desc', 'common')}</p>
+                  <p className="font-medium">
+                    {t('settings.security.two_factor', 'common')}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('settings.security.two_factor_desc', 'common')}
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   {t('settings.security.configure', 'common')}
@@ -102,8 +142,12 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">{t('settings.security.active_sessions', 'common')}</p>
-                  <p className="text-sm text-muted-foreground">{t('settings.security.active_sessions_desc', 'common')}</p>
+                  <p className="font-medium">
+                    {t('settings.security.active_sessions', 'common')}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {t('settings.security.active_sessions_desc', 'common')}
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   {t('settings.security.view_sessions', 'common')}

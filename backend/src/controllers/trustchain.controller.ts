@@ -3,7 +3,7 @@
 
 import { Request, Response } from 'express';
 import { TrustChainService } from '../services/trustchain.service';
-import { logger } from '../config/logger';
+import { logger } from '../config/logger.serverless';
 import { ApiResponse, Profile, LeaderboardEntry, TrustScoreEvent } from '../types/contracts';
 
 interface AuthenticatedRequest extends Request {

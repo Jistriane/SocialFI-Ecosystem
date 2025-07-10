@@ -22,7 +22,14 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
   const { t } = useLocale()
   const router = useRouter()
-  const { activeUsers, trustConnections, volumeTraded, successRate, isLoading, error } = useEcosystemStats()
+  const {
+    activeUsers,
+    trustConnections,
+    volumeTraded,
+    successRate,
+    isLoading,
+    error,
+  } = useEcosystemStats()
 
   // Função para navegar para páginas específicas
   const handleFeatureClick = (feature: string) => {
@@ -229,7 +236,7 @@ export default function Home() {
           </section>
 
           {/* Wallet Connection Section */}
-                    <section id="wallet-section" className="mt-16 space-y-6">
+          <section id="wallet-section" className="mt-16 space-y-6">
             <div className="text-center">
               <h2 className="text-3xl font-bold text-white mb-4">
                 {t('home.sections.connect_wallet')}
@@ -263,6 +270,6 @@ export default function Home() {
           </section>
         </div>
       </div>
-        </div>
+    </div>
   )
-} 
+}

@@ -3,12 +3,14 @@
 
 #!/bin/bash
 
-# Script de inicialização do sistema SocialFI Ecosystem v2.0
-# Suporte para Metis Sepolia Testnet e Ethereum Sepolia Testnet
+# Script de inicialização do sistema SocialFI Ecosystem v3.0
+# Suporte para Multi-Testnet (Metis Sepolia + Ethereum Sepolia)
+# Sistema de monitoramento avançado e recuperação automática
 # Autor: Sistema SocialFI
 # Data: $(date +%Y-%m-%d)
+# Versão: 3.0.0 - Sistema Completamente Atualizado
 
-set -e  # Parar execução em caso de erro
+set -euo pipefail  # Parar execução em caso de erro, variáveis não definidas e pipes
 
 # Cores para output
 RED='\033[0;31m'
@@ -24,55 +26,317 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BACKEND_PID=""
 FRONTEND_PID=""
 HARDHAT_PID=""
+BLOCKCHAIN_PID=""
 
-# Função para log colorido
+# Configurações do sistema
+BACKEND_PORT=3002
+FRONTEND_PORT=3001
+SOCKET_PORT=3003
+HARDHAT_PORT=8545
+
+# Timeouts (em segundos)
+INSTALL_TIMEOUT=900     # 15 minutos para instalação
+BACKEND_TIMEOUT=180     # 3 minutos para backend
+FRONTEND_TIMEOUT=420    # 7 minutos para frontend
+TEST_TIMEOUT=600        # 10 minutos para testes
+COMPILE_TIMEOUT=300     # 5 minutos para compilação
+
+# Status dos testes
+CONTRACTS_TEST_STATUS="N/A"
+BACKEND_TEST_STATUS="N/A"
+FRONTEND_TEST_STATUS="N/A"
+
+# Controle de execução
+SKIP_TESTS=false
+SKIP_DEPENDENCIES=false
+FORCE_REINSTALL=false
+PRODUCTION_MODE=false
+VERBOSE_MODE=false
+
+# Arquivos de log
+MAIN_LOG="$PROJECT_ROOT/system-startup.log"
+BACKEND_LOG="$PROJECT_ROOT/backend.log"
+FRONTEND_LOG="$PROJECT_ROOT/frontend.log"
+CONTRACTS_LOG="$PROJECT_ROOT/contracts.log"
+
+# Função para log colorido com arquivo
 log() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] ✅ $1${NC}"
+    local message="[$(date +'%Y-%m-%d %H:%M:%S')] ✅ $1"
+    echo -e "${GREEN}${message}${NC}"
+    echo "$message" >> "$MAIN_LOG"
 }
 
 error() {
-    echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ❌ $1${NC}"
+    local message="[$(date +'%Y-%m-%d %H:%M:%S')] ❌ $1"
+    echo -e "${RED}${message}${NC}"
+    echo "$message" >> "$MAIN_LOG"
 }
 
 warning() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%d %H:%M:%S')] ⚠️  $1${NC}"
+    local message="[$(date +'%Y-%m-%d %H:%M:%S')] ⚠️  $1"
+    echo -e "${YELLOW}${message}${NC}"
+    echo "$message" >> "$MAIN_LOG"
 }
 
 info() {
-    echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')] ℹ️  $1${NC}"
+    local message="[$(date +'%Y-%m-%d %H:%M:%S')] ℹ️  $1"
+    echo -e "${BLUE}${message}${NC}"
+    echo "$message" >> "$MAIN_LOG"
+}
+
+debug() {
+    if [ "$VERBOSE_MODE" = true ]; then
+        local message="[$(date +'%Y-%m-%d %H:%M:%S')] 🔍 $1"
+        echo -e "${PURPLE}${message}${NC}"
+        echo "$message" >> "$MAIN_LOG"
+    fi
+}
+
+# Função para mostrar progresso
+show_progress() {
+    local current=$1
+    local total=$2
+    local operation=$3
+    local percent=$((current * 100 / total))
+    local bar_length=20
+    local filled_length=$((percent * bar_length / 100))
+    
+    local bar=""
+    for ((i=0; i<filled_length; i++)); do bar+="█"; done
+    for ((i=filled_length; i<bar_length; i++)); do bar+="░"; done
+    
+    printf "\r${CYAN}[%s] %d%% %s${NC}" "$bar" "$percent" "$operation"
+    if [ "$current" -eq "$total" ]; then
+        echo ""
+    fi
+}
+
+# Função para verificar se um comando existe
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Função para verificar se uma porta está em uso
+is_port_in_use() {
+    local port=$1
+    if command_exists lsof; then
+        lsof -i ":$port" >/dev/null 2>&1
+    elif command_exists netstat; then
+        netstat -tuln | grep ":$port " >/dev/null 2>&1
+    elif command_exists ss; then
+        ss -tuln | grep ":$port " >/dev/null 2>&1
+    else
+        # Fallback usando nc
+        nc -z localhost "$port" 2>/dev/null
+    fi
+}
+
+# Função para matar processo em uma porta
+kill_process_on_port() {
+    local port=$1
+    if command_exists lsof; then
+        local pid=$(lsof -ti ":$port" 2>/dev/null)
+        if [ -n "$pid" ]; then
+            debug "Matando processo $pid na porta $port"
+            kill -9 "$pid" 2>/dev/null || true
+            sleep 2
+        fi
+    fi
+}
+
+# Função para verificar se um processo está rodando
+is_process_running() {
+    local pid=$1
+    [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null
+}
+
+# Função para aguardar um processo terminar
+wait_for_process_to_stop() {
+    local pid=$1
+    local timeout=${2:-30}
+    local counter=0
+    
+    while is_process_running "$pid" && [ $counter -lt $timeout ]; do
+        sleep 1
+        counter=$((counter + 1))
+    done
+    
+    if is_process_running "$pid"; then
+        debug "Forçando término do processo $pid"
+        kill -9 "$pid" 2>/dev/null || true
+    fi
 }
 
 # Função para verificar pré-requisitos
 check_prerequisites() {
     log "🔍 Verificando pré-requisitos do sistema..."
     
+    local prerequisites_ok=true
+    
     # Verificar Node.js
-    if ! command -v node &> /dev/null; then
+    if ! command_exists node; then
         error "Node.js não está instalado. Instale Node.js 18+ primeiro."
-        exit 1
-    fi
-    
-    local node_version=$(node --version | sed 's/v//')
-    local major_version=$(echo $node_version | cut -d. -f1)
-    
-    if [ "$major_version" -lt 18 ]; then
-        error "Node.js versão 18+ é necessário. Versão atual: $node_version"
-        exit 1
-    fi
-    
-    log "Node.js versão $node_version detectado ✅"
-    
-    # Verificar netcat para health checks
-    if ! command -v nc &> /dev/null; then
-        warning "netcat não encontrado. Instalando..."
-        if command -v apt-get &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y netcat
-        elif command -v yum &> /dev/null; then
-            sudo yum install -y nc
+        prerequisites_ok=false
+    else
+        local node_version=$(node --version | sed 's/v//')
+        local major_version=$(echo $node_version | cut -d. -f1)
+        
+        if [ "$major_version" -lt 18 ]; then
+            error "Node.js versão 18+ é necessário. Versão atual: $node_version"
+            prerequisites_ok=false
         else
-            warning "Não foi possível instalar netcat automaticamente"
+            log "Node.js versão $node_version detectado ✅"
         fi
     fi
+    
+    # Verificar npm
+    if ! command_exists npm; then
+        error "npm não está instalado."
+        prerequisites_ok=false
+    else
+        local npm_version=$(npm --version)
+        log "npm versão $npm_version detectado ✅"
+    fi
+    
+    # Verificar Git
+    if ! command_exists git; then
+        warning "Git não encontrado. Algumas funcionalidades podem não funcionar."
+    else
+        debug "Git detectado: $(git --version)"
+    fi
+    
+    # Verificar curl
+    if ! command_exists curl; then
+        warning "curl não encontrado. Instalando..."
+        if command_exists apt-get; then
+            sudo apt-get update && sudo apt-get install -y curl
+        elif command_exists yum; then
+            sudo yum install -y curl
+        else
+            warning "Não foi possível instalar curl automaticamente"
+        fi
+    fi
+    
+    # Verificar ferramentas de rede
+    local network_tool_found=false
+    for tool in lsof netstat ss nc; do
+        if command_exists "$tool"; then
+            debug "Ferramenta de rede encontrada: $tool"
+            network_tool_found=true
+            break
+        fi
+    done
+    
+    if [ "$network_tool_found" = false ]; then
+        warning "Nenhuma ferramenta de rede encontrada. Instalando netcat..."
+        if command_exists apt-get; then
+            sudo apt-get update && sudo apt-get install -y netcat-openbsd
+        elif command_exists yum; then
+            sudo yum install -y nc
+        else
+            warning "Não foi possível instalar ferramentas de rede automaticamente"
+        fi
+    fi
+    
+    # Verificar espaço em disco
+    local available_space=$(df "$PROJECT_ROOT" | awk 'NR==2 {print $4}')
+    if [ "$available_space" -lt 1048576 ]; then  # 1GB em KB
+        warning "Pouco espaço em disco disponível: $(($available_space / 1024))MB"
+        warning "Recomendado: pelo menos 1GB livre"
+    fi
+    
+    # Verificar memória RAM
+    if command_exists free; then
+        local available_memory=$(free -m | awk 'NR==2{print $7}')
+        if [ "$available_memory" -lt 512 ]; then
+            warning "Pouca memória RAM disponível: ${available_memory}MB"
+            warning "Recomendado: pelo menos 512MB livre"
+        fi
+    fi
+    
+    if [ "$prerequisites_ok" = false ]; then
+        error "Pré-requisitos não atendidos. Corrija os problemas acima antes de continuar."
+        exit 1
+    fi
+    
+    log "Todos os pré-requisitos verificados com sucesso ✅"
+}
+
+# Função para processar argumentos da linha de comando
+process_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --skip-tests)
+                SKIP_TESTS=true
+                info "Testes serão pulados"
+                shift
+                ;;
+            --skip-deps|--skip-dependencies)
+                SKIP_DEPENDENCIES=true
+                info "Instalação de dependências será pulada"
+                shift
+                ;;
+            --force-reinstall)
+                FORCE_REINSTALL=true
+                info "Reinstalação forçada de dependências"
+                shift
+                ;;
+            --production)
+                PRODUCTION_MODE=true
+                info "Modo de produção ativado"
+                shift
+                ;;
+            --verbose|-v)
+                VERBOSE_MODE=true
+                info "Modo verboso ativado"
+                shift
+                ;;
+            --backend-port)
+                BACKEND_PORT="$2"
+                info "Porta do backend definida para: $BACKEND_PORT"
+                shift 2
+                ;;
+            --frontend-port)
+                FRONTEND_PORT="$2"
+                info "Porta do frontend definida para: $FRONTEND_PORT"
+                shift 2
+                ;;
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            *)
+                warning "Argumento desconhecido: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# Função para mostrar ajuda
+show_help() {
+    echo -e "${BLUE}========================================${NC}"
+    echo -e "${BLUE}  SocialFI Ecosystem - Sistema de Inicialização${NC}"
+    echo -e "${BLUE}========================================${NC}"
+    echo -e "${GREEN}Uso: $0 [opções]${NC}"
+    echo ""
+    echo -e "${YELLOW}Opções:${NC}"
+    echo -e "  --skip-tests              Pular execução dos testes"
+    echo -e "  --skip-deps               Pular instalação de dependências"
+    echo -e "  --force-reinstall         Forçar reinstalação de dependências"
+    echo -e "  --production              Executar em modo de produção"
+    echo -e "  --verbose, -v             Ativar modo verboso"
+    echo -e "  --backend-port PORT       Definir porta do backend (padrão: 3002)"
+    echo -e "  --frontend-port PORT      Definir porta do frontend (padrão: 3001)"
+    echo -e "  --help, -h                Mostrar esta ajuda"
+    echo ""
+    echo -e "${CYAN}Exemplos:${NC}"
+    echo -e "  $0                        Inicialização completa"
+    echo -e "  $0 --skip-tests           Inicializar sem executar testes"
+    echo -e "  $0 --verbose              Inicializar com saída detalhada"
+    echo -e "  $0 --production           Inicializar em modo de produção"
+    echo ""
 }
 
 # Função para criar arquivos de ambiente
@@ -448,53 +712,124 @@ wait_for_process_completion() {
     return 0
 }
 
-# Função para instalar dependências com tratamento de erros
+# Função para instalar dependências com tratamento de erros melhorado
 install_dependencies() {
     local dir=$1
     local name=$2
     
+    if [ "$SKIP_DEPENDENCIES" = true ]; then
+        info "⏭️  Pulando instalação de dependências para $name"
+        return 0
+    fi
+    
     log "📦 Instalando dependências em $name ($dir)..."
+    
+    # Verificar se o diretório existe
+    if [ ! -d "$dir" ]; then
+        error "Diretório não encontrado: $dir"
+        return 1
+    fi
+    
     cd "$dir" || exit 1
     
     # Verificar se package.json existe
     if [ ! -f "package.json" ]; then
         error "package.json não encontrado em $dir"
-        exit 1
+        return 1
     fi
     
-    # Limpar cache se necessário
-    if [ -d "node_modules" ] && [ -f "package-lock.json" ]; then
+    # Verificar se já existem dependências instaladas
+    if [ -d "node_modules" ] && [ "$FORCE_REINSTALL" = false ]; then
+        local package_lock_hash=""
+        local current_hash=""
+        
+        if [ -f "package-lock.json" ]; then
+            package_lock_hash=$(md5sum package-lock.json 2>/dev/null | cut -d' ' -f1)
+        fi
+        
+        if [ -f ".install_hash" ]; then
+            current_hash=$(cat .install_hash 2>/dev/null)
+        fi
+        
+        if [ "$package_lock_hash" = "$current_hash" ] && [ -n "$package_lock_hash" ]; then
+            info "⏭️  Dependências já instaladas e atualizadas em $name"
+            return 0
+        fi
+    fi
+    
+    # Limpar instalação anterior se necessário
+    if [ "$FORCE_REINSTALL" = true ] || [ -d "node_modules" ]; then
         info "🧹 Limpando instalação anterior em $name..."
-        rm -rf node_modules package-lock.json 2>/dev/null || true
+        rm -rf node_modules package-lock.json .install_hash 2>/dev/null || true
     fi
     
-    # Instalar dependências
+    # Limpar cache npm
+    debug "Limpando cache npm..."
     npm cache clean --force > /dev/null 2>&1 || true
     
-    info "📥 Executando npm install em $name..."
-    
-    # Executar npm install em background para poder monitorar
-    npm install --legacy-peer-deps --silent &
-    local npm_pid=$!
-    
-    # Aguardar conclusão com timeout de 10 minutos para dependências
-    if wait_for_process_completion $npm_pid "npm install ($name)" 600; then
-        log "✅ Dependências instaladas com sucesso em $name"
+    # Preparar comando de instalação
+    local install_cmd="npm install"
+    if [ "$PRODUCTION_MODE" = true ]; then
+        install_cmd="npm ci --only=production"
     else
-        error "❌ Falha ao instalar dependências em $name"
-        exit 1
+        install_cmd="npm install --legacy-peer-deps"
     fi
     
-    # Compilar TypeScript se for backend
-    if [[ $name == "backend" ]]; then
+    info "📥 Executando $install_cmd em $name..."
+    
+    # Executar instalação com timeout
+    timeout "$INSTALL_TIMEOUT" $install_cmd > "../install-$name.log" 2>&1 &
+    local npm_pid=$!
+    
+    # Monitorar progresso
+    local counter=0
+    local progress_interval=30
+    
+    while is_process_running "$npm_pid"; do
+        sleep 5
+        counter=$((counter + 5))
+        
+        if [ $((counter % progress_interval)) -eq 0 ]; then
+            show_progress "$counter" "$INSTALL_TIMEOUT" "Instalando $name"
+        fi
+        
+        if [ $counter -ge $INSTALL_TIMEOUT ]; then
+            error "❌ Timeout na instalação de dependências para $name após $((INSTALL_TIMEOUT/60)) minutos"
+            kill -9 "$npm_pid" 2>/dev/null || true
+            return 1
+        fi
+    done
+    
+    # Verificar se a instalação foi bem-sucedida
+    wait "$npm_pid"
+    local exit_code=$?
+    
+    if [ $exit_code -eq 0 ]; then
+        log "✅ Dependências instaladas com sucesso em $name em ${counter}s"
+        
+        # Salvar hash para verificação futura
+        if [ -f "package-lock.json" ]; then
+            md5sum package-lock.json | cut -d' ' -f1 > .install_hash
+        fi
+    else
+        error "❌ Falha ao instalar dependências em $name (código: $exit_code)"
+        error "Verifique o log: install-$name.log"
+        return 1
+    fi
+    
+    # Compilar TypeScript se necessário
+    if [[ $name == "backend" ]] && [ -f "tsconfig.json" ]; then
         log "🔨 Compilando TypeScript do backend..."
-        if npm run build; then
+        if timeout "$COMPILE_TIMEOUT" npm run build > "../compile-backend.log" 2>&1; then
             log "✅ Backend compilado com sucesso"
         else
             error "❌ Falha ao compilar o backend"
-            exit 1
+            error "Verifique o log: compile-backend.log"
+            return 1
         fi
     fi
+    
+    return 0
 }
 
 # Função para executar testes com relatório detalhado e timeout inteligente
@@ -578,46 +913,120 @@ copy_contract_abis() {
 # Função para verificar uma porta específica
 check_port() {
     local port=$1
-    if nc -z localhost $port 2>/dev/null; then
-        warning "⚠️  Porta $port está em uso. Tentando liberar..."
-        # Tentar matar processos na porta
-        local pid=$(lsof -ti:$port 2>/dev/null)
-        if [ ! -z "$pid" ]; then
-            kill -9 $pid 2>/dev/null || true
-            sleep 2
+    local service_name=$2
+    
+    if is_port_in_use "$port"; then
+        warning "⚠️  Porta $port ($service_name) está em uso."
+        
+        # Mostrar qual processo está usando a porta
+        if command_exists lsof; then
+            local process_info=$(lsof -i ":$port" 2>/dev/null | tail -n +2)
+            if [ -n "$process_info" ]; then
+                warning "Processo usando a porta: $process_info"
+            fi
         fi
-        # Verificar novamente
-        if nc -z localhost $port 2>/dev/null; then
-            warning "⚠️  Porta $port ainda está em uso. Continue mesmo assim."
+        
+        # Perguntar se deve matar o processo
+        read -p "Deseja terminar o processo na porta $port? (s/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Ss]$ ]]; then
+            kill_process_on_port "$port"
+            sleep 2
+            
+            if is_port_in_use "$port"; then
+                error "❌ Não foi possível liberar a porta $port"
+                return 1
+            else
+                log "✅ Porta $port liberada com sucesso"
+            fi
         else
-            log "✅ Porta $port liberada"
+            warning "⚠️  Continuando com porta $port em uso. Pode haver conflitos."
         fi
     else
-        log "✅ Porta $port disponível"
+        debug "Porta $port ($service_name) disponível"
     fi
+    
+    return 0
 }
 
 # Função para verificar portas disponíveis
 check_system_ports() {
-    log "🔍 Verificando disponibilidade das portas..."
-    check_port 3001 # Frontend
-    check_port 3002 # Backend API
-    check_port 3003 # Socket.IO
-    log "✅ Portas verificadas e liberadas"
+    log "🔍 Verificando disponibilidade das portas do sistema..."
+    
+    local ports_to_check=(
+        "$FRONTEND_PORT:Frontend"
+        "$BACKEND_PORT:Backend API"
+        "$SOCKET_PORT:Socket.IO"
+        "$HARDHAT_PORT:Hardhat Node"
+    )
+    
+    local all_ports_ok=true
+    
+    for port_info in "${ports_to_check[@]}"; do
+        local port="${port_info%:*}"
+        local service="${port_info#*:}"
+        
+        if ! check_port "$port" "$service"; then
+            all_ports_ok=false
+        fi
+    done
+    
+    if [ "$all_ports_ok" = true ]; then
+        log "✅ Todas as portas verificadas e disponíveis"
+    else
+        warning "⚠️  Algumas portas podem estar em conflito"
+    fi
 }
 
 # Função para cleanup ao sair
 cleanup() {
-    log "🧹 Encerrando serviços..."
-    if [ ! -z "$BACKEND_PID" ]; then
-        kill $BACKEND_PID 2>/dev/null || true
-        wait $BACKEND_PID 2>/dev/null || true
+    echo ""
+    log "🧹 Encerrando serviços do sistema..."
+    
+    # Parar serviços em ordem reversa
+    local services_stopped=0
+    
+    # Parar frontend
+    if [ -n "$FRONTEND_PID" ] && is_process_running "$FRONTEND_PID"; then
+        info "Parando frontend (PID: $FRONTEND_PID)..."
+        kill -TERM "$FRONTEND_PID" 2>/dev/null || true
+        wait_for_process_to_stop "$FRONTEND_PID" 10
+        services_stopped=$((services_stopped + 1))
     fi
-    if [ ! -z "$FRONTEND_PID" ]; then
-        kill $FRONTEND_PID 2>/dev/null || true
-        wait $FRONTEND_PID 2>/dev/null || true
+    
+    # Parar backend
+    if [ -n "$BACKEND_PID" ] && is_process_running "$BACKEND_PID"; then
+        info "Parando backend (PID: $BACKEND_PID)..."
+        kill -TERM "$BACKEND_PID" 2>/dev/null || true
+        wait_for_process_to_stop "$BACKEND_PID" 10
+        services_stopped=$((services_stopped + 1))
     fi
-    log "🔚 Sistema encerrado"
+    
+    # Parar hardhat node se existir
+    if [ -n "$HARDHAT_PID" ] && is_process_running "$HARDHAT_PID"; then
+        info "Parando Hardhat node (PID: $HARDHAT_PID)..."
+        kill -TERM "$HARDHAT_PID" 2>/dev/null || true
+        wait_for_process_to_stop "$HARDHAT_PID" 10
+        services_stopped=$((services_stopped + 1))
+    fi
+    
+    # Limpar processos órfãos nas portas
+    for port in "$FRONTEND_PORT" "$BACKEND_PORT" "$SOCKET_PORT" "$HARDHAT_PORT"; do
+        if is_port_in_use "$port"; then
+            debug "Limpando porta $port..."
+            kill_process_on_port "$port"
+        fi
+    done
+    
+    # Salvar relatório final
+    if [ $services_stopped -gt 0 ]; then
+        log "✅ $services_stopped serviço(s) encerrado(s) com sucesso"
+    fi
+    
+    log "🔚 Sistema SocialFI Ecosystem encerrado"
+    echo "Logs salvos em: $MAIN_LOG" >> "$MAIN_LOG"
+    echo "Encerramento: $(date)" >> "$MAIN_LOG"
+    
     exit 0
 }
 
@@ -737,32 +1146,86 @@ monitor_services() {
 
 # Função para exibir relatório final
 show_final_report() {
+    local end_time=$(date +%s)
+    local start_time_file="$PROJECT_ROOT/.start_time"
+    local total_time="N/A"
+    
+    if [ -f "$start_time_file" ]; then
+        local start_time=$(cat "$start_time_file")
+        total_time=$((end_time - start_time))
+        rm -f "$start_time_file"
+    fi
+    
     echo -e "${GREEN}========================================${NC}"
     echo -e "${GREEN}    🎉 SISTEMA INICIADO COM SUCESSO!    ${NC}"
     echo -e "${GREEN}========================================${NC}"
-    echo -e "${GREEN}Frontend:    http://localhost:${FRONTEND_PORT}${NC}"
-    echo -e "${GREEN}Backend API: http://localhost:3002${NC}"
-    echo -e "${GREEN}Socket.IO:   http://localhost:3002/socket.io${NC}"
+    echo -e "${GREEN}🌐 SERVIÇOS DISPONÍVEIS:${NC}"
+    echo -e "${GREEN}  Frontend:     http://localhost:${FRONTEND_PORT}${NC}"
+    echo -e "${GREEN}  Backend API:  http://localhost:${BACKEND_PORT}${NC}"
+    echo -e "${GREEN}  Socket.IO:    http://localhost:${BACKEND_PORT}/socket.io${NC}"
+    echo -e "${GREEN}  WebSocket:    ws://localhost:${BACKEND_PORT}${NC}"
     echo -e "${GREEN}========================================${NC}"
     echo -e "${BLUE}📊 RELATÓRIO DE TESTES:${NC}"
-    echo -e "${BLUE}  - Contratos: ${CONTRACTS_TEST_STATUS:-N/A}${NC}"
-    echo -e "${BLUE}  - Backend:   ${BACKEND_TEST_STATUS:-N/A}${NC}"
-    echo -e "${BLUE}  - Frontend:  ${FRONTEND_TEST_STATUS:-N/A}${NC}"
+    echo -e "${BLUE}  - Contratos:  ${CONTRACTS_TEST_STATUS}${NC}"
+    echo -e "${BLUE}  - Backend:    ${BACKEND_TEST_STATUS}${NC}"
+    echo -e "${BLUE}  - Frontend:   ${FRONTEND_TEST_STATUS}${NC}"
     echo -e "${GREEN}========================================${NC}"
-    echo -e "${YELLOW}📋 Logs disponíveis em:${NC}"
-    echo -e "${YELLOW}  - Backend: $PROJECT_ROOT/backend.log${NC}"
-    echo -e "${YELLOW}  - Frontend: $PROJECT_ROOT/frontend.log${NC}"
-    echo -e "${YELLOW}  - Testes: $PROJECT_ROOT/test-*.log${NC}"
+    echo -e "${CYAN}⚙️  CONFIGURAÇÕES:${NC}"
+    echo -e "${CYAN}  - Modo:       $([ "$PRODUCTION_MODE" = true ] && echo "Produção" || echo "Desenvolvimento")${NC}"
+    echo -e "${CYAN}  - Rede:       Multi-Testnet (Metis + Ethereum Sepolia)${NC}"
+    echo -e "${CYAN}  - Node.js:    $(node --version)${NC}"
+    if [ "$total_time" != "N/A" ]; then
+        echo -e "${CYAN}  - Tempo:      ${total_time}s ($(($total_time/60))min)${NC}"
+    fi
+    echo -e "${GREEN}========================================${NC}"
+    echo -e "${YELLOW}📋 LOGS E MONITORAMENTO:${NC}"
+    echo -e "${YELLOW}  - Principal:  $MAIN_LOG${NC}"
+    echo -e "${YELLOW}  - Backend:    $BACKEND_LOG${NC}"
+    echo -e "${YELLOW}  - Frontend:   $FRONTEND_LOG${NC}"
+    echo -e "${YELLOW}  - Contratos:  $CONTRACTS_LOG${NC}"
+    echo -e "${YELLOW}  - Instalação: install-*.log${NC}"
+    echo -e "${GREEN}========================================${NC}"
+    echo -e "${PURPLE}🔗 LINKS ÚTEIS:${NC}"
+    echo -e "${PURPLE}  - Metis Explorer: https://hyperion-testnet-explorer.metisdevops.link${NC}"
+    echo -e "${PURPLE}  - Ethereum Explorer: https://sepolia.etherscan.io${NC}"
+    echo -e "${PURPLE}  - Documentação: README.md${NC}"
     echo -e "${GREEN}========================================${NC}"
     echo -e "${BLUE}💡 Pressione CTRL+C para encerrar todos os serviços${NC}"
+    echo -e "${BLUE}💡 Use '$0 --help' para ver todas as opções disponíveis${NC}"
     echo -e "${GREEN}========================================${NC}"
+    
+    # Salvar relatório no log
+    {
+        echo "========================================" 
+        echo "RELATÓRIO FINAL - $(date)"
+        echo "========================================" 
+        echo "Frontend: http://localhost:${FRONTEND_PORT}"
+        echo "Backend: http://localhost:${BACKEND_PORT}"
+        echo "Testes - Contratos: ${CONTRACTS_TEST_STATUS}"
+        echo "Testes - Backend: ${BACKEND_TEST_STATUS}"
+        echo "Testes - Frontend: ${FRONTEND_TEST_STATUS}"
+        if [ "$total_time" != "N/A" ]; then
+            echo "Tempo total de inicialização: ${total_time}s"
+        fi
+        echo "========================================"
+    } >> "$MAIN_LOG"
 }
 
 # INÍCIO DO SCRIPT PRINCIPAL
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}    SocialFI Ecosystem - Start System  ${NC}"
-echo -e "${BLUE}    Versão 2.0 - Sistema Melhorado     ${NC}"
+echo -e "${BLUE}    Versão 3.0 - Sistema Completamente Atualizado${NC}"
 echo -e "${BLUE}========================================${NC}"
+
+# Inicializar log principal
+echo "=== Inicialização do Sistema SocialFI Ecosystem ===" > "$MAIN_LOG"
+echo "Data: $(date)" >> "$MAIN_LOG"
+echo "Usuário: $(whoami)" >> "$MAIN_LOG"
+echo "Diretório: $PROJECT_ROOT" >> "$MAIN_LOG"
+echo "========================================" >> "$MAIN_LOG"
+
+# Processar argumentos da linha de comando
+process_arguments "$@"
 
 # Registrar handler para CTRL+C
 trap cleanup SIGINT SIGTERM
@@ -770,11 +1233,18 @@ trap cleanup SIGINT SIGTERM
 # Verificar se estamos no diretório correto
 if [ ! -f "$PROJECT_ROOT/package.json" ] || [ ! -d "$PROJECT_ROOT/contracts" ]; then
     error "❌ Diretório do projeto inválido. Execute o script a partir da raiz do projeto SocialFI Ecosystem."
+    error "Diretório atual: $(pwd)"
+    error "PROJECT_ROOT: $PROJECT_ROOT"
     exit 1
 fi
 
+log "🚀 Iniciando sistema SocialFI Ecosystem v3.0"
+log "📁 Diretório do projeto: $PROJECT_ROOT"
+
+# Salvar timestamp de início
+date +%s > "$PROJECT_ROOT/.start_time"
+
 # 1. Verificar pré-requisitos
-log "🔍 Verificando pré-requisitos do sistema..."
 check_prerequisites
 
 # 2. Verificar e criar arquivos de ambiente
@@ -814,25 +1284,48 @@ install_dependencies "$PROJECT_ROOT/backend" "backend"
 install_dependencies "$PROJECT_ROOT/frontend" "frontend"
 
 # 8. Executar testes
-run_tests
+if [ "$SKIP_TESTS" = false ]; then
+    run_tests
+else
+    info "⏭️  Testes pulados conforme solicitado"
+fi
 
 # 9. Iniciar serviços
-log "🚀 Iniciando serviços..."
+log "🚀 Iniciando serviços do sistema..."
+
+# Verificar portas uma última vez antes de iniciar
+check_system_ports
 
 # Iniciar backend
-log "🔧 Iniciando backend..."
+log "🔧 Iniciando backend na porta $BACKEND_PORT..."
 cd "$PROJECT_ROOT/backend" || exit 1
-npm run dev > ../backend.log 2>&1 &
+
+# Definir variável de ambiente para a porta
+export PORT="$BACKEND_PORT"
+
+if [ "$PRODUCTION_MODE" = true ]; then
+    npm run start > "$BACKEND_LOG" 2>&1 &
+else
+    npm run dev > "$BACKEND_LOG" 2>&1 &
+fi
+
 BACKEND_PID=$!
 log "Backend iniciado com PID: $BACKEND_PID"
 
-# Aguardar um pouco antes de iniciar o frontend
-sleep 3
+# Aguardar backend inicializar antes do frontend
+info "⏳ Aguardando backend estabilizar..."
+sleep 5
 
 # Iniciar frontend
-log "🎨 Iniciando frontend..."
+log "🎨 Iniciando frontend na porta $FRONTEND_PORT..."
 cd "$PROJECT_ROOT/frontend" || exit 1
-npm run dev > ../frontend.log 2>&1 &
+
+if [ "$PRODUCTION_MODE" = true ]; then
+    npm run start > "$FRONTEND_LOG" 2>&1 &
+else
+    npm run dev > "$FRONTEND_LOG" 2>&1 &
+fi
+
 FRONTEND_PID=$!
 log "Frontend iniciado com PID: $FRONTEND_PID"
 
@@ -847,17 +1340,50 @@ else
 fi
 
 # 12. Monitorar processos continuamente
-log "🔄 Monitorando processos..."
+monitor_system() {
+    log "🔄 Monitorando processos do sistema..."
+    info "Sistema em execução. Monitorando saúde dos serviços..."
+
+    local monitor_interval=10
+    local health_check_interval=60
+    local health_check_counter=0
+
 while true; do
-    if ! ps -p $BACKEND_PID > /dev/null 2>&1; then
+    # Verificar se os processos ainda estão rodando
+    if [ -n "$BACKEND_PID" ] && ! is_process_running "$BACKEND_PID"; then
         error "❌ Backend parou de responder (PID: $BACKEND_PID)"
+        error "Verifique o log: $BACKEND_LOG"
         cleanup
         exit 1
     fi
-    if ! ps -p $FRONTEND_PID > /dev/null 2>&1; then
+    
+    if [ -n "$FRONTEND_PID" ] && ! is_process_running "$FRONTEND_PID"; then
         error "❌ Frontend parou de responder (PID: $FRONTEND_PID)"
+        error "Verifique o log: $FRONTEND_LOG"
         cleanup
         exit 1
     fi
-    sleep 10
-done 
+    
+    # Health check periódico
+    health_check_counter=$((health_check_counter + monitor_interval))
+    if [ $health_check_counter -ge $health_check_interval ]; then
+        debug "Executando health check dos serviços..."
+        
+        # Verificar se as portas ainda estão respondendo
+        if ! is_port_in_use "$BACKEND_PORT"; then
+            warning "⚠️  Porta do backend ($BACKEND_PORT) não está respondendo"
+        fi
+        
+        if ! is_port_in_use "$FRONTEND_PORT"; then
+            warning "⚠️  Porta do frontend ($FRONTEND_PORT) não está respondendo"
+        fi
+        
+        health_check_counter=0
+    fi
+    
+    sleep $monitor_interval
+done
+}
+
+# Chamar função de monitoramento
+monitor_system
